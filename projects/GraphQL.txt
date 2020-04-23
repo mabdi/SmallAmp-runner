@@ -1,0 +1,4 @@
+Metacello new
+    baseline: 'GraphQL';
+    repository: 'github://OBJECTSEMANTICS/GraphQL';
+    load.

@@ -1,0 +1,4 @@
+Metacello new
+  baseline: 'Polyglot';
+  repository: 'github://PolyMathOrg/Polyglot/src';
+  load.

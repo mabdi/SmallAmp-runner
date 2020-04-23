@@ -1,0 +1,4 @@
+Metacello new
+  baseline: #NewWave;
+  repository: 'github://skaplar/NewWave:master';
+  load.

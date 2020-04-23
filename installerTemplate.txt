@@ -1,0 +1,41 @@
+| search packages classes testPackages tests focousedTests testMethodFocoused stat testrun |
+search := '{}' asLowercase.
+
+
+
+{}
+
+
+packages := RPackage organizer packages select: [:p | p name asLowercase includesSubstring: search ].
+classes := packages flatCollect: [ :p | p definedClasses ].
+testPackages := packages
+		select: [ :p | p definedClasses anySatisfy: [ :c | c isTestCase ] ].
+tests := testPackages
+		flatCollect:
+			[ :p | p definedClasses select: [ :c | c allSuperclasses includes: TestCase ] ].
+
+testrun := TestAsserter classForTestResult new.
+tests do: [:ts | ts run: testrun].
+
+focousedTests := tests select: [ :s | s smallAmpTargetClasses isNotNil ].
+testMethodFocoused := focousedTests flatCollect: #allTestSelectors.
+stat := {{ #packages -> packages size.
+#classes -> classes size.
+#testPackages -> testPackages size.
+#tests -> tests size.
+#focousedTests -> focousedTests size.
+#focousedTestsMethods -> testMethodFocoused size.
+#testsFails -> testrun failureCount.
+#testsErrors -> testrun errorCount.
+#testsPasses -> testrun passedCount.
+ }} asString.
+
+(FileLocator workingDirectory / (search,'.stat')) writeStream
+	nextPutAll: stat;
+	cr;
+	close.
+
+(FileLocator workingDirectory / 'todo.txt') writeStream
+        nextPutAll: (Character cr join: (focousedTests));
+	cr;
+        close.

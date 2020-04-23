@@ -1,0 +1,4 @@
+Metacello new
+  repository: 'github://svenvc/zinc/repository';
+  baseline: 'ZincHTTPComponents';
+  load.

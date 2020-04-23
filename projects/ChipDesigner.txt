@@ -1,0 +1,4 @@
+Metacello new
+  baseline: 'ChipDesigner';
+  repository: 'github://pavel-krivanek/PharoChipDesigner/src';
+  load.

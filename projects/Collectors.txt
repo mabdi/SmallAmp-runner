@@ -1,0 +1,4 @@
+Metacello new
+    baseline: 'Collectors';
+    repository: 'github://ClotildeToullec/Collectors';
+    load.
