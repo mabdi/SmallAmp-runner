@@ -5,8 +5,8 @@ import sys
 
 parser = argparse.ArgumentParser(description='Evaluate SmallAmp on selected projects.')
 parser.add_argument('-p', '--project', help='Process on just specified project')
-parser.add_argument('-s', '--step', help='Process only specified step')
-parser.add_argument('-f', '--force', help='Use force')
+parser.add_argument('-s', '--step', help='Process only specified step' , choices=['vm', 'load', 'stat'] )
+parser.add_argument('-f', '--force', help='Use force' , action='store_true')
 
 args = parser.parse_args()
 force = args.force
@@ -17,10 +17,11 @@ home = os.path.expanduser("~")
 manifestDirectory = "projects/"
 manifestFile = manifestDirectory + "manifest.tsv"
 templateFile = "statTemplate.txt"
-baseAddress = home + '/myvms/base/'
+baseAddress = home + '/Pharo-Base/'
 projectsDirectory = home + '/pharo-projects/'
 statStFileName = 'stats.st'
 loaderStFileName = 'loader.st'
+pharoVM = home + 'Pharo/pharo'
 
 def parseManifest(manifestFile):
    manifest = []
@@ -52,7 +53,7 @@ def makeStat(projectName, projectPrefix, projectFile):
    destinationURL = projectsDirectory + projectName
    cwd = os.getcwd()
    os.chdir(destinationURL)
-   os.system(home + '/pharo Pharo.image st '+ statStFileName +' --save --quit')
+   os.system(pharoVM + ' Pharo.image st '+ statStFileName +' --save --quit > projectStat.log')
    os.chdir(cwd)
 
 def loadProject(projectName, projectPrefix, projectFile):
@@ -64,7 +65,7 @@ def loadProject(projectName, projectPrefix, projectFile):
    destinationURL = projectsDirectory + projectName
    cwd = os.getcwd()
    os.chdir(destinationURL)
-   os.system(home + '/pharo Pharo.image st '+ loaderStFileName +' --save --quit > projectLoad.log')
+   os.system(pharoVM + ' Pharo.image st '+ loaderStFileName +' --save --quit > projectLoad.log')
    os.chdir(cwd)
 
 def main():
