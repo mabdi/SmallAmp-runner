@@ -40,7 +40,7 @@ def makeInstaller(projectName, projectPrefix, projectFile):
 
 def installOnVM(projectName):
    destinationURL = projectsDirectory + projectName
-   cwd = os.getcwd().
+   cwd = os.getcwd()
    os.chdir(destinationURL)
    os.system(home + '/pharo Pharo.image st '+ installerName +' --save --quit')
    os.chdir(cwd)
