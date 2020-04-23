@@ -1,10 +1,5 @@
-| search packages classes testPackages tests focousedTests testMethodFocoused stat testrun |
+| search packages classes testPackages tests focousedTests testMethodFocoused stat testrun testsuite |
 search := '{}' asLowercase.
-
-
-
-{}
-
 
 packages := RPackage organizer packages select: [:p | p name asLowercase includesSubstring: search ].
 classes := packages flatCollect: [ :p | p definedClasses ].
@@ -14,8 +9,9 @@ tests := testPackages
 		flatCollect:
 			[ :p | p definedClasses select: [ :c | c allSuperclasses includes: TestCase ] ].
 
-testrun := TestAsserter classForTestResult new.
-tests do: [:ts | ts run: testrun].
+testsuite := TestSuite new.
+tests do: [ :ts | testsuite addTests: ts buildSuite tests ].
+testrun := testsuite run.
 
 focousedTests := tests select: [ :s | s smallAmpTargetClasses isNotNil ].
 testMethodFocoused := focousedTests flatCollect: #allTestSelectors.
