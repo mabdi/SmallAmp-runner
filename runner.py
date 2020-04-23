@@ -21,7 +21,7 @@ baseAddress = home + '/Pharo-Base/'
 projectsDirectory = home + '/pharo-projects/'
 statStFileName = 'stats.st'
 loaderStFileName = 'loader.st'
-pharoVM = home + 'Pharo/pharo'
+pharoVM = home + '/Pharo/pharo'
 
 def parseManifest(manifestFile):
    manifest = []
@@ -37,6 +37,8 @@ def duplicateVM(projectName):
    if not force and os.path.exists(destinationURL):
        print('Image folder is already exists. Skip vm step. ')
    else:
+       if os.path.exists(destinationURL):
+          os.system('rm -rf ' + destinationURL)
        os.system('cp -r '+ baseAddress + ' ' + destinationURL)
        print('Image duplicated: '+ destinationURL)
 
