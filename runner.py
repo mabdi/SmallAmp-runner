@@ -3,7 +3,8 @@ import glob
 import sys
 
 home = os.path.expanduser("~")
-manifestFile = "projects/manifest.tsv"
+manifestDirectory = "projects/"
+manifestFile = manifestDirectory + "manifest.tsv"
 templateFile = "installerTemplate.txt"
 baseAddress = home + '/myvms/base/'
 regenerateImages = False
@@ -16,7 +17,8 @@ def parseManifest(manifestFile):
       lines = f.readlines()
    for line in lines:
      cols = line.split("\t")
-     manifest.append({'name': cols[0], 'prefix': cols[1], 'file': cols[2]})
+     manifest.append({'name': cols[0].strip(), 'prefix': cols[1].strip(), 'file': manifestDirectory + cols[2].strip() })
+   return manifest
 
 def duplicateVM(projectName):
    destinationURL = projectsDirectory + projectName
@@ -38,9 +40,10 @@ def makeInstaller(projectName, projectPrefix, projectFile):
 
 def installOnVM(projectName):
    destinationURL = projectsDirectory + projectName
+   cwd = os.getcwd().
    os.chdir(destinationURL)
    os.system(home + '/pharo Pharo.image st '+ installerName +' --save --quit')
-
+   os.chdir(cwd)
 
 def main():
    projects = parseManifest(manifestFile)
