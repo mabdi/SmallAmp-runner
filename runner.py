@@ -2,10 +2,12 @@ import argparse
 import os
 import glob
 import sys
+from datetime import datetime
+
 
 parser = argparse.ArgumentParser(description='Evaluate SmallAmp on selected projects.')
 parser.add_argument('-p', '--project', help='Process on just specified project')
-parser.add_argument('-s', '--step', help='Process only specified step' , choices=['vm', 'load', 'stat'] )
+parser.add_argument('-s', '--step', help='Process only specified step' , choices=['vm', 'load', 'stat', 'amp'] )
 parser.add_argument('-f', '--force', help='Use force' , action='store_true')
 
 args = parser.parse_args()
@@ -22,12 +24,16 @@ projectsDirectory = home + '/pharo-projects/'
 statStFileName = 'stats.st'
 loaderStFileName = 'loader.st'
 pharoVM = home + '/Pharo/pharo'
+todoFileName = 'todo.txt'
+doneFileName = 'done.txt'
 
 def parseManifest(manifestFile):
    manifest = []
    with open(manifestFile, "r") as f:
       lines = f.readlines()
    for line in lines:
+     if not line.strip() or line.startswith('#'): 
+       continue 
      cols = line.split("\t")
      manifest.append({'name': cols[0].strip(), 'prefix': cols[1].strip(), 'file': manifestDirectory + cols[2].strip() })
    return manifest
@@ -70,16 +76,62 @@ def loadProject(projectName, projectPrefix, projectFile):
    os.system(pharoVM + ' Pharo.image st '+ loaderStFileName +' --save --quit > projectLoad.log')
    os.chdir(cwd)
 
+
+def checkDone(projectName, className):
+    doneFile = projectsDirectory + projectName + '/' + doneFileName
+    if not os.path.exists(doneFile):
+       with open(doneFile, 'w'): pass
+    with open(doneFile,"r") as f:
+       dones = f.readlines()
+    for cname in dones:
+       if cname == className:
+           return True
+    return False
+
+
+def markAsDone(projectName, className):
+    doneFile = projectsDirectory + projectName + '/' + doneFileName
+    with open(doneFile,"a+") as f:
+        f.write(className)
+        f.write(os.linesep)
+
+def runAmplification(projectName):
+   todoFile = projectsDirectory + projectName + '/' + todoFileName
+   with open(todoFile,"r") as f:
+      todo = f.readlines()
+
+   for cname in todo:
+       className = cname.strip()
+       if not className:
+          continue
+       if force or not checkDone(projectName, className):
+          print('Amplifying: ' + className)
+          cwd = os.getcwd()
+          os.chdir(projectsDirectory + projectName)
+          if not os.path.exists('out'):
+                os.makedirs('out')
+          cmd = 'SmallAmp initializeDefault testCase: {} ; amplifyEval'.format( className )
+          os.system(pharoVM + ' Pharo.image eval --save \''+ cmd  +'\' > out/amplification'+ className +'.log')
+          os.chdir(cwd)
+          markAsDone(projectName, className)
+       else:
+          print('Skipping: ' + className)
+
 def main():
    projects = parseManifest(manifestFile)
    for p in projects:
-     if project is None or project == p:
+     #print(project,p['name'],step)
+     if project is None or project == p['name']:
         if step is None or step == 'vm':
            duplicateVM(p['name'])
         if step is None or step == 'load':
            loadProject(p['name'], p['prefix'], p['file'])
         if step is None or step == 'stat':
            makeStat(p['name'], p['prefix'], p['file'])
+        if step is None or step == 'amp':
+           runAmplification(p['name'])
 
+print('Script started at: ', datetime.now().strftime("%m/%d/%Y, %H:%M:%S"))
 main()
+print('Script finished at: ', datetime.now().strftime("%m/%d/%Y, %H:%M:%S"))
 

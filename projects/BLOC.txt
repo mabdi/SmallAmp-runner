@@ -1,4 +1,4 @@
 Metacello new
-   baseline: 'Bloc';
+   baseline: 'BlocLayout';
    repository: 'github://pharo-graphics/Bloc/src';
    load

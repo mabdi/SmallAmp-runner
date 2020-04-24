@@ -1,4 +1,4 @@
 Metacello new
         baseline: 'RenoirSt';
-        repository: 'github://ba-st/RenoirSt:release-candidate/source';
-        load.
+        repository: 'github://ba-st/RenoirSt/source';
+        load: #Development.

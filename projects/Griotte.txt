@@ -1,4 +1,4 @@
 Metacello new
   baseline: 'Griotte';
-  repository: 'github://Balletie/Griotte:master';
-  load.
+  repository: 'github://Balletie/Griotte';
+  load: 'tests'.
