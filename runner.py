@@ -3,17 +3,20 @@ import os
 import glob
 import sys
 from datetime import datetime
-
+import re
+import json
 
 parser = argparse.ArgumentParser(description='Evaluate SmallAmp on selected projects.')
 parser.add_argument('-p', '--project', help='Process on just specified project')
 parser.add_argument('-s', '--step', help='Process only specified step' , choices=['vm', 'load', 'stat', 'amp'] )
 parser.add_argument('-f', '--force', help='Use force' , action='store_true')
+parser.add_argument('-r', '--report', help='Generate report',  choices=['stat', 'amp'])
 
 args = parser.parse_args()
 force = args.force
 step = args.step
 project =args.project
+report = args.report
 
 home = os.path.expanduser("~")
 manifestDirectory = "projects/"
@@ -117,7 +120,53 @@ def runAmplification(projectName):
        else:
           print('Skipping: ' + className)
 
-def main():
+def reportStat(projectName):
+   statFile = projectsDirectory + projectName + '/' + statStFileName
+   with open(statFile) as f:
+      stat = f.read()
+   matches = re.findall("#(\w+)->(\d+)\.?", data)
+   matches = {tuple[0]:int(tuple[1]) for tuple in matches}
+   print(projectName + '\t' + ','.join(str(x) for x in [
+        1 if matches['testsFails'] ==0 and matches['testsErrors'] ==0 else 0,
+        matches['packages'],
+        matches['classes'],
+        matches['tests'],
+        matches['focousedTests'],
+        matches['focousedTestsMethods']
+   ]))
+
+def reportAmp(projectName):
+   directory = projectsDirectory + projectName
+   todoFile = projectsDirectory + projectName + '/' + todoFileName
+   json_files = [pos_json for pos_json in os.listdir(directory) if pos_json.endswith('.txt')] #TODO: change to .json
+   with open(todoFile,"r") as f:
+      todo = f.readlines()
+   for cname in todo:
+      className = cname.strip()
+      with open(directory + '/out/amplification' + className + '.log') as f:
+         log = f.read()
+      if not "Run finish" in log:
+        print(projectName + ',' + className + ',' + 'Unfinished Run (Image Crash?)')
+        return
+      if "Error details" in log:
+         errDet = re.findall('Error details:(.+)',log)[0]
+         ampMethods = re.findall('assert amplification:(.+)',log)
+         lastMethod = ampMethods[-1] if len(ampMethods) > 0 else ''
+         print(projectName + ',' + className + ',' + 'Finished with Error ({}) {}'.format(errDet,lastMethod))
+         return
+      for jsFile in json_files:
+         if className in jsFile:
+            with open(directory + "/"+ jsFile) as f:
+               jsonStr = f.read()
+            jsonObj = json.loads(jsonStr)
+            print(projectName + ',' + className + ',' + 'Finished successfully' + ',' + ','.join(str(x) for x in [
+               jsonObj['mutationScoreBefore'],
+               jsonObj['mutationScoreAfter'],
+               jsonObj['timeTotal'],
+               len(jsonObj['amplifiedMethods'])
+            ]))
+
+def processMain():
    projects = parseManifest(manifestFile)
    for p in projects:
      #print(project,p['name'],step)
@@ -131,7 +180,19 @@ def main():
         if step is None or step == 'amp':
            runAmplification(p['name'])
 
+def reportMain():
+   projects = parseManifest(manifestFile)
+   for p in projects:
+      if project is None or project == p['name']:
+         if report == 'stat':
+            reportStat(p['name'])
+         elif report == 'amp':
+            reportAmp(p['name'])
+
 print('Script started at: ', datetime.now().strftime("%m/%d/%Y, %H:%M:%S"))
-main()
+if not report is None:
+   reportMain()
+else:
+   processMain() #default action
 print('Script finished at: ', datetime.now().strftime("%m/%d/%Y, %H:%M:%S"))
 
