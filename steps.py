@@ -7,7 +7,7 @@ import re
 import json
 from config import *
 
-def duplicateVM(projectName):
+def duplicateVM(force, projectName):
    destinationURL = projectsDirectory + projectName
    if not force and os.path.exists(destinationURL):
        print('Image folder is already exists. Skip vm step. ')
@@ -17,7 +17,7 @@ def duplicateVM(projectName):
        os.system('cp -r '+ baseAddress + ' ' + destinationURL)
        print('Image duplicated: '+ destinationURL)
 
-def makeStat(projectName, projectPrefix, projectFile):
+def makeStat(force, projectName, projectPrefix, projectFile):
    installerURL = projectsDirectory + projectName + '/' + statStFileName
    if not force and os.path.exists(installerURL):
       print('State file found. skip stat step.')
@@ -33,7 +33,7 @@ def makeStat(projectName, projectPrefix, projectFile):
    os.system(pharoVM + ' Pharo.image st '+ statStFileName +' --save --quit > projectStat.log')
    os.chdir(cwd)
 
-def loadProject(projectName, projectPrefix, projectFile):
+def loadProject(force, projectName, projectPrefix, projectFile):
    loaderFile = projectsDirectory + projectName + '/' + loaderStFileName
    if not force and os.path.exists(loaderFile):
       print('loader file found. skip load step.')
@@ -64,7 +64,7 @@ def markAsDone(projectName, className):
         f.write(className)
         f.write(os.linesep)
 
-def runAmplification(projectName):
+def runAmplification(force, projectName):
    todoFile = projectsDirectory + projectName + '/' + todoFileName
    with open(todoFile,"r") as f:
       todo = f.readlines()

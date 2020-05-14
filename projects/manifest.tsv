@@ -15,10 +15,10 @@ Willow	Willow	Willow.txt
 #Calypso	Calypso	Calypso.txt
 SmartTest	SmartTest	SmartTest.txt
 Jun	Jun	Jun.txt
-#OpenPonk	OpenPonk	OpenPonk.txt
+OpenPonk	OpenPonk	OpenPonk.txt
 BLOC	BLOC	BLOC.txt
 #Griotte	Griotte	Griotte.txt
-#Spy2	Spy2	Spy2.txt
+Spy2	Spy2	Spy2.txt
 Telescope	Telescope	Telescope.txt
 Buoy	Buoy	Buoy.txt
 #Fuel	Fuel	Fuel.txt
@@ -27,6 +27,6 @@ PetitParser2	PetitParser2	PetitParser2.txt
 RenoirSt	RenoirSt	RenoirSt.txt
 Seaside	Seaside	Seaside.txt
 #Zinc	Zinc	Zinc.txt
-#roassal3	roassal3	roassal3.txt
+roassal3	roassal3	roassal3.txt
 dataframe	dataframe	dataframe.txt
 GTSpotter	spotter	GTSpotter.txt

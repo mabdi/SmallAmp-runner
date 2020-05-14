@@ -32,13 +32,13 @@ def processMain():
    for p in projects:
      if project is None or project == p['name']:
         if step is None or step == 'vm':
-           duplicateVM(p['name'])
+           duplicateVM(force, p['name'])
         if step is None or step == 'load':
-           loadProject(p['name'], p['prefix'], p['file'])
+           loadProject(force, p['name'], p['prefix'], p['file'])
         if step is None or step == 'stat':
-           makeStat(p['name'], p['prefix'], p['file'])
+           makeStat(force, p['name'], p['prefix'], p['file'])
         if step is None or step == 'amp':
-           runAmplification(p['name'])
+           runAmplification(force, p['name'])
 
 def reportMain():
    projects = parseManifest(manifestFile)

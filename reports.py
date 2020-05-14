@@ -9,7 +9,7 @@ def reportStat(projectName):
    statFile = projectsDirectory + projectName + '/' + statStFileName
    with open(statFile) as f:
       stat = f.read()
-   matches = re.findall("#(\w+)->(\d+)\.?", data)
+   matches = re.findall("#(\w+)->(\d+)\.?", stat)
    matches = {tuple[0]:int(tuple[1]) for tuple in matches}
    print(projectName + '\t' + ','.join(str(x) for x in [
         1 if matches['testsFails'] ==0 and matches['testsErrors'] ==0 else 0,
@@ -19,6 +19,7 @@ def reportStat(projectName):
         matches['focousedTests'],
         matches['focousedTestsMethods']
    ]))
+
 
 def reportAmp(projectName):
    directory = projectsDirectory + projectName
@@ -32,14 +33,14 @@ def reportAmp(projectName):
          log = f.read()
       if not "Run finish" in log:
         print(projectName + ',' + className + ',' + 'Unfinished Run (Image Crash?)')
-        return
+        continue
       if "Error details" in log:
          errDet = re.findall('Error details:(.+)',log)[0]
          ampMethods = re.findall('assert amplification:(.+)',log)
          lastMethod = ampMethods[-1] if len(ampMethods) > 0 else ''
          print(projectName + ',' + className + ',' + 'Finished with Error ({}) {}'.format(errDet,lastMethod))
-         return
-      jsons = [jsFile for jsFile in json_files if className in jsFile]
+         continue
+      jsons = [jsFile for jsFile in json_files if jsFile.startswith(className)]
       if not jsons:
          print('check me@ ' + projectName + ',' + className)
       for jsFile in jsons:
@@ -49,6 +50,7 @@ def reportAmp(projectName):
             print(projectName + ',' + className + ',' + 'Finished successfully' + ',' + ','.join(str(x) for x in [
                jsonObj['mutationScoreBefore'],
                jsonObj['mutationScoreAfter'],
+               jsonObj['mutationScoreAfter'] - jsonObj['mutationScoreBefore'],
                jsonObj['timeTotal'],
                len(jsonObj['amplifiedMethods'])
             ]))
