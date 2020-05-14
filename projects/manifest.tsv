@@ -1,32 +1,32 @@
-NewWave	NewWave	NewWave.txt
-#PowerAssert	PowerAssert	PowerAssert.txt
-ChipDesigner	ChipDesigner	ChipDesigner.txt
-PharoCodeGenerator	PharoCodeGenerator	PharoCodeGenerator.txt
-PolyMath	Math	PolyMath.txt
-GraphQL	GraphQL	GraphQL.txt
-Polyglot	PG	Polyglot.txt
-DrTests	DrTests	DrTests.txt
-#Iceberg	Iceberg	Iceberg.txt
-#HoneyGinger	HoneyGinger	HoneyGinger.txt
-Clap	Clap	Clap.txt
-#Collectors	Collectors	Collectors.txt
-Willow	Willow	Willow.txt
-#PharoLauncher	PharoLauncher	PharoLauncher.txt
-#Calypso	Calypso	Calypso.txt
-SmartTest	SmartTest	SmartTest.txt
-Jun	Jun	Jun.txt
-OpenPonk	OpenPonk	OpenPonk.txt
-BLOC	BLOC	BLOC.txt
-#Griotte	Griotte	Griotte.txt
-Spy2	Spy2	Spy2.txt
-Telescope	Telescope	Telescope.txt
-Buoy	Buoy	Buoy.txt
-#Fuel	Fuel	Fuel.txt
-Moose	Moose	Moose.txt
-PetitParser2	PetitParser2	PetitParser2.txt
-RenoirSt	RenoirSt	RenoirSt.txt
-Seaside	Seaside	Seaside.txt
-#Zinc	Zinc	Zinc.txt
-roassal3	roassal3	roassal3.txt
-dataframe	dataframe	dataframe.txt
-GTSpotter	spotter	GTSpotter.txt
+NewWave	NewWave	NewWave.txt	https://github.com/skaplar/NewWave
+#PowerAssert	PowerAssert	PowerAssert.txt	https://github.com/dupriezt/PowerAssert
+ChipDesigner	ChipDesigner	ChipDesigner.txt	https://github.com/pavel-krivanek/PharoChipDesigner
+PharoCodeGenerator	PharoCodeGenerator	PharoCodeGenerator.txt	https://github.com/juliendelplanque/PharoCodeGenerator
+PolyMath	Math	PolyMath.txt	https://github.com/PolyMathOrg/PolyMath
+GraphQL	GraphQL	GraphQL.txt	https://github.com/OBJECTSEMANTICS/GraphQL
+Polyglot	PG	Polyglot.txt	https://github.com/pharo-ai/Polyglot
+DrTests	DrTests	DrTests.txt	https://github.com/juliendelplanque/DrTests
+#Iceberg	Iceberg	Iceberg.txt	https://github.com/pharo-vcs/iceberg
+#HoneyGinger	HoneyGinger	HoneyGinger.txt	https://github.com/tomooda/HoneyGinger/
+Clap	Clap	Clap.txt	https://github.com/cdlm/clap-st
+#Collectors	Collectors	Collectors.txt	https://github.com/ClotildeToullec/Collectors
+Willow	Willow	Willow.txt	https://github.com/ba-st/Willow
+#PharoLauncher	PharoLauncher	PharoLauncher.txt	https://github.com/pharo-project/pharo-launcher
+#Calypso	Calypso	Calypso.txt	https://github.com/dionisiydk/Calypso
+SmartTest	SmartTest	SmartTest.txt	https://github.com/badetitou/SmartTest
+Jun	Jun	Jun.txt	https://github.com/tomooda/Jun
+OpenPonk	OpenPonk	OpenPonk.txt	https://github.com/OpenPonk/openponk
+BLOC	BLOC	BLOC.txt	https://github.com/pharo-graphics/Bloc
+#Griotte	Griotte	Griotte.txt	https://github.com/Balletie/Griotte
+Spy2	Spy2	Spy2.txt	https://github.com/ObjectProfile/Spy2
+Telescope	Telescope	Telescope.txt	https://github.com/TelescopeSt/Telescope
+Buoy	Buoy	Buoy.txt	https://github.com/ba-st/Buoy
+#Fuel	Fuel	Fuel.txt	https://github.com/theseion/Fuel
+Moose	Moose	Moose.txt	https://github.com/moosetechnology/Moose
+PetitParser2	PetitParser2	PetitParser2.txt	https://github.com/kursjan/petitparser2
+RenoirSt	RenoirSt	RenoirSt.txt	https://github.com/ba-st/RenoirSt/
+Seaside	Seaside	Seaside.txt	https://github.com/SeasideSt/Seaside
+#Zinc	Zinc	Zinc.txt	https://github.com/svenvc/zinc
+roassal3	roassal3	roassal3.txt	https://github.com/ObjectProfile/Roassal3
+dataframe	dataframe	dataframe.txt	https://github.com/PolyMathOrg/DataFrame
+#GTSpotter	GT-Tests-Spotter	GTSpotter.txt	-

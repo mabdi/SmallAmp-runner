@@ -24,7 +24,7 @@ def reportStat(projectName):
 def reportAmp(projectName):
    directory = projectsDirectory + projectName
    todoFile = projectsDirectory + projectName + '/' + todoFileName
-   json_files = [pos_json for pos_json in os.listdir(directory) if pos_json.endswith('.txt')] #TODO: change to .json
+   json_files = [pos_json for pos_json in os.listdir(directory) if pos_json.endswith('.json')] # changed to .json
    with open(todoFile,"r") as f:
       todo = f.readlines()
    for cname in todo:
@@ -43,7 +43,7 @@ def reportAmp(projectName):
       jsons = [jsFile for jsFile in json_files if jsFile.startswith(className)]
       if not jsons:
          print('check me@ ' + projectName + ',' + className)
-      for jsFile in jsons:
+      for jsFile in jsons: # there should be just 1 json file
             with open(directory + "/"+ jsFile) as f:
                jsonStr = f.read()
             jsonObj = json.loads(jsonStr)

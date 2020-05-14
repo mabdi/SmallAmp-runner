@@ -22,15 +22,17 @@ def makeStat(force, projectName, projectPrefix, projectFile):
    if not force and os.path.exists(installerURL):
       print('State file found. skip stat step.')
       return
-   with open(templateFile, "r") as f:
-      template = f.read()
-   with open(installerURL, "w") as f:
-      f.write(template.format(projectPrefix))
-   print('StatScript is made '+ installerURL)
+   #with open(templateFile, "r") as f:
+   #   template = f.read()
+   #with open(installerURL, "w") as f:
+   #   f.write(template.format(projectPrefix))
+   #print('StatScript is made '+ installerURL)
    destinationURL = projectsDirectory + projectName
    cwd = os.getcwd()
    os.chdir(destinationURL)
-   os.system(pharoVM + ' Pharo.image st '+ statStFileName +' --save --quit > projectStat.log')
+   cmd = 'SmallAmp metricsEval: \'{}\''.format( projectPrefix )
+   os.system(pharoVM + ' Pharo.image eval --save "'+ cmd  +'" > projectStat.log')
+   #os.system(pharoVM + ' Pharo.image st '+ statStFileName +' --save --quit > projectStat.log')
    os.chdir(cwd)
 
 def loadProject(force, projectName, projectPrefix, projectFile):
