@@ -4,7 +4,7 @@ import os
 home = os.path.expanduser("~")
 manifestDirectory = "projects/"
 manifestFile = manifestDirectory + "manifest.tsv"
-templateFile = "statTemplate.txt"
+#templateFile = "statTemplate.txt"
 baseAddress = home + '/Pharo-Base/'
 projectsDirectory = home + '/pharo-projects/'
 statStFileName = 'stats.st'

@@ -82,7 +82,7 @@ def runAmplification(force, projectName):
           if not os.path.exists('out'):
                 os.makedirs('out')
           cmd = 'SmallAmp initializeDefault testCase: {} ; amplifyEval'.format( className )
-          os.system(pharoVM + ' Pharo.image eval --save \''+ cmd  +'\' > out/amplification'+ className +'.log')
+          os.system(pharoVM + ' Pharo.image eval --save \''+ cmd  +'\' > out/'+ className +'.log')
           os.chdir(cwd)
           markAsDone(projectName, className)
        else:
