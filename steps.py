@@ -30,8 +30,7 @@ def makeStat(force, projectName, projectPrefix, projectFile):
    destinationURL = projectsDirectory + projectName
    cwd = os.getcwd()
    os.chdir(destinationURL)
-   cmd = 'SmallAmp metricsEval: \'{}\''.format( projectPrefix )
-   os.system(pharoVM + ' Pharo.image eval --save "'+ cmd  +'" > projectStat.log')
+   os.system(pharoVM + ' Pharo.image smallamp --stat={} > projectStat.log'.format( projectPrefix ) )
    #os.system(pharoVM + ' Pharo.image st '+ statStFileName +' --save --quit > projectStat.log')
    os.chdir(cwd)
 
@@ -66,7 +65,21 @@ def markAsDone(projectName, className):
         f.write(className)
         f.write(os.linesep)
 
+def reloadSmallAmp(force, projectName):
+   destinationURL = projectsDirectory + projectName
+   cwd = os.getcwd()
+   os.chdir(destinationURL)
+   os.system(pharoVM + " Pharo.image eval --save \"((IceRepository registry detect: [ :r | r name = 'small-amp' ]) pull) branch commits first id\"")
+   os.chdir(cwd)
+
+def runAmplificationUI(force, projectName):
+    return runAmplificationBackend(pharoVMUI ,force, projectName)
+
+
 def runAmplification(force, projectName):
+    return runAmplificationBackend(pharoVM ,force, projectName)
+
+def runAmplificationBackend(proc ,force, projectName):
    todoFile = projectsDirectory + projectName + '/' + todoFileName
    with open(todoFile,"r") as f:
       todo = f.readlines()
@@ -81,9 +94,16 @@ def runAmplification(force, projectName):
           os.chdir(projectsDirectory + projectName)
           if not os.path.exists('out'):
                 os.makedirs('out')
+          with open('/tmp/AmpCurrent.smallamp', 'w') as f:
+              f.write(projectName)
+              f.write(':')
+              f.write(className)
           cmd = 'SmallAmp initializeDefault testCase: {} ; amplifyEval'.format( className )
-          os.system(pharoVM + ' Pharo.image eval --save \''+ cmd  +'\' > out/'+ className +'.log')
+          os.system(proc + ' Pharo.image eval --save \''+ cmd  +'\' > out/'+ className +'.log')
           os.chdir(cwd)
           markAsDone(projectName, className)
        else:
           print('Skipping: ' + className)
+
+
+

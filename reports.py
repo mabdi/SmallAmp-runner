@@ -29,7 +29,7 @@ def reportAmp(projectName):
       todo = f.readlines()
    for cname in todo:
       className = cname.strip()
-      with open(directory + '/out/amplification' + className + '.log') as f:
+      with open(directory + '/out/' + className + '.log') as f:
          log = f.read()
       if not "Run finish" in log:
         print(projectName + ',' + className + ',' + 'Unfinished Run (Image Crash?)')
@@ -46,11 +46,31 @@ def reportAmp(projectName):
       for jsFile in jsons: # there should be just 1 json file
             with open(directory + "/"+ jsFile) as f:
                jsonStr = f.read()
+            #print(directory + "/"+ jsFile)
             jsonObj = json.loads(jsonStr)
             print(projectName + ',' + className + ',' + 'Finished successfully' + ',' + ','.join(str(x) for x in [
+               jsonObj['amplifiedClass'],
+               ' '.join(jsonObj['targetClasses']),
                jsonObj['mutationScoreBefore'],
                jsonObj['mutationScoreAfter'],
                jsonObj['mutationScoreAfter'] - jsonObj['mutationScoreBefore'],
-               jsonObj['timeTotal'],
-               len(jsonObj['amplifiedMethods'])
+               jsonObj['targetLoc'],
+               jsonObj['testLoc'],
+               jsonObj['testAmpLoc'],
+               jsonObj['targetChurn'],
+               jsonObj['testChurn'],
+               jsonObj['assertionDensityOriginal'],
+               jsonObj['assertionDensityAmplified'],
+               jsonObj['originalCoverageStatementes'],
+               jsonObj['amplifiedCoverageStatementes'],
+               jsonObj['originalCoverageBranches'],
+               jsonObj['amplifiedCoverageBranches'],
+               jsonObj['originalCoverageMethods'],
+               jsonObj['amplifiedCoverageMethods'],
+               len(jsonObj['amplifiedMethods']),
+               len(jsonObj['mutantsAliveInOriginal']),
+               len(jsonObj['killedInAmplified']),
+               len(jsonObj['stillAliveMutants']),
+               len(jsonObj['methodsNotProfiled']),
+               jsonObj['timeTotal']
             ]))
