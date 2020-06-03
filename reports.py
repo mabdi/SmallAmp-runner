@@ -99,7 +99,7 @@ def reportAmp_backend(projectName):
    with open(blacklistfile) as f:
       blacklistclasses = f.readlines()
    blacklistclasses = [s.strip() for s in blacklistclasses]
-   print(blacklistclasses)
+
    with open(todoFile,"r") as f:
       todo = f.readlines()
    for cname in todo:
@@ -118,6 +118,7 @@ def reportAmp_backend(projectName):
             if jsonObj:
                result.append({'stat':'success','className':className,'jsonObj':jsonObj})
                continue
+
       with open(directory + '/out/' + className + '.log') as f:
          log = f.read()
       if not "Run finish" in log:
