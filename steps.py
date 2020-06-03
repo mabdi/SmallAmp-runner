@@ -58,6 +58,12 @@ def checkDone(projectName, className):
            return True
     return False
 
+def blackList():
+    if not os.path.exists(blacklistfile):
+       with open(blacklistfile, 'w'): pass
+    with open(blacklistfile,"r") as f:
+       blacklist = f.readlines()
+    return [s.strip() for s in blacklist]
 
 def markAsDone(projectName, className):
     doneFile = projectsDirectory + projectName + '/' + doneFileName
@@ -87,6 +93,9 @@ def runAmplificationBackend(proc ,force, projectName):
    for cname in todo:
        className = cname.strip()
        if not className:
+          continue
+       if className in blackList():
+          print('Skipping ' + className + ' -- blacklist')
           continue
        if force or not checkDone(projectName, className):
           print('Amplifying: ' + className)
