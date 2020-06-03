@@ -85,6 +85,8 @@ def reportAmp(projectName):
           print(projectName + ',' + row['className'] + ',' + 'Finished with Error ({}) {}'.format(row['errDet'],row['lastMethod']))
       elif row['stat'] == 'fail':
           print(projectName + ',' + row['className'] + ',' + 'Unfinished Run (Image Crash?)')
+      elif row['stat'] == 'blacklist':
+          print(projectName + ',' + row['className'] + ',' + 'Skipped (blacklist)')
       else:
           print('shet!')
 
@@ -94,11 +96,18 @@ def reportAmp_backend(projectName):
    directory = projectsDirectory + projectName
    todoFile = projectsDirectory + projectName + '/' + todoFileName
    json_files = [pos_json for pos_json in os.listdir(directory) if pos_json.endswith('.json')] # changed to .json
+   with open(blacklistfile) as f:
+      blacklistclasses = f.readlines()
+   blacklistclasses = [s.strip() for s in blacklistclasses]
+   print(blacklistclasses)
    with open(todoFile,"r") as f:
       todo = f.readlines()
    for cname in todo:
       jsonObj = None
       className = cname.strip()
+      if className in blacklistclasses:
+         result.append({'stat':'blacklist','className':className})
+         continue
       if os.path.exists(directory + "/"+ className + '.json'):
             with open(directory + "/"+ className + '.json') as f:
                jsonStr = f.read()
