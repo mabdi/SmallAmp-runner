@@ -28,49 +28,57 @@ def reportAmp(projectName):
    with open(todoFile,"r") as f:
       todo = f.readlines()
    for cname in todo:
+      jsonObj = None
       className = cname.strip()
+      if os.path.exists(directory + "/"+ className + '.json'):
+            with open(directory + "/"+ className + '.json') as f:
+               jsonStr = f.read()
+            #print(directory + "/"+ jsFile)
+            try:
+                jsonObj = json.loads(jsonStr)
+            except:
+                pass
+               #print(projectName + ',' + className + ',' + 'JSON file invalid')
+            if jsonObj:
+               print(projectName + ',' + className + ',' + 'Finished successfully' + ',' + ','.join(str(x) for x in [
+                  jsonObj['amplifiedClass'],
+                  ' '.join(jsonObj['targetClasses']),
+                  jsonObj['mutationScoreBefore'],
+                  jsonObj['mutationScoreAfter'],
+                  jsonObj['mutationScoreAfter'] - jsonObj['mutationScoreBefore'],
+                  jsonObj['targetLoc'],
+                  jsonObj['testLoc'],
+                  jsonObj['testAmpLoc'],
+#                 jsonObj['targetChurn'],
+#                 jsonObj['testChurn'],
+                  jsonObj['assertionDensityOriginal'],
+                  jsonObj['assertionDensityAmplified'],
+                  jsonObj['originalCoverageStatementes'],
+                  jsonObj['amplifiedCoverageStatementes'],
+                  jsonObj['originalCoverageBranches'],
+                  jsonObj['amplifiedCoverageBranches'],
+                  jsonObj['originalCoverageMethods'],
+                  jsonObj['amplifiedCoverageMethods'],
+                  len(jsonObj['amplifiedMethods']),
+                  len(jsonObj['mutantsAliveInOriginal']),
+                  len(jsonObj['killedInAmplified']),
+                  len(jsonObj['stillAliveMutants']),
+                  len(jsonObj['methodsNotProfiled']),
+                  jsonObj['timeTotal']
+               ]))
+               continue
       with open(directory + '/out/' + className + '.log') as f:
          log = f.read()
       if not "Run finish" in log:
         print(projectName + ',' + className + ',' + 'Unfinished Run (Image Crash?)')
-        continue
+#        continue
       if "Error details" in log:
          errDet = re.findall('Error details:(.+)',log)[0]
          ampMethods = re.findall('assert amplification:(.+)',log)
          lastMethod = ampMethods[-1] if len(ampMethods) > 0 else ''
          print(projectName + ',' + className + ',' + 'Finished with Error ({}) {}'.format(errDet,lastMethod))
-         continue
-      jsons = [jsFile for jsFile in json_files if jsFile.startswith(className)]
-      if not jsons:
-         print('check me@ ' + projectName + ',' + className)
-      for jsFile in jsons: # there should be just 1 json file
-            with open(directory + "/"+ jsFile) as f:
-               jsonStr = f.read()
-            #print(directory + "/"+ jsFile)
-            jsonObj = json.loads(jsonStr)
-            print(projectName + ',' + className + ',' + 'Finished successfully' + ',' + ','.join(str(x) for x in [
-               jsonObj['amplifiedClass'],
-               ' '.join(jsonObj['targetClasses']),
-               jsonObj['mutationScoreBefore'],
-               jsonObj['mutationScoreAfter'],
-               jsonObj['mutationScoreAfter'] - jsonObj['mutationScoreBefore'],
-               jsonObj['targetLoc'],
-               jsonObj['testLoc'],
-               jsonObj['testAmpLoc'],
-               jsonObj['targetChurn'],
-               jsonObj['testChurn'],
-               jsonObj['assertionDensityOriginal'],
-               jsonObj['assertionDensityAmplified'],
-               jsonObj['originalCoverageStatementes'],
-               jsonObj['amplifiedCoverageStatementes'],
-               jsonObj['originalCoverageBranches'],
-               jsonObj['amplifiedCoverageBranches'],
-               jsonObj['originalCoverageMethods'],
-               jsonObj['amplifiedCoverageMethods'],
-               len(jsonObj['amplifiedMethods']),
-               len(jsonObj['mutantsAliveInOriginal']),
-               len(jsonObj['killedInAmplified']),
-               len(jsonObj['stillAliveMutants']),
-               len(jsonObj['methodsNotProfiled']),
-               jsonObj['timeTotal']
-            ]))
+#         continue
+      #jsons = [jsFile for jsFile in json_files if jsFile.startswith(className)]
+      #if not jsons:
+      #   print('check me@ ' + projectName + ',' + className)
+      #for jsFile in jsons: # there should be just 1 json file

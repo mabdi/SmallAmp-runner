@@ -54,7 +54,7 @@ def checkDone(projectName, className):
     with open(doneFile,"r") as f:
        dones = f.readlines()
     for cname in dones:
-       if cname == className:
+       if cname.strip() == className.strip():
            return True
     return False
 
