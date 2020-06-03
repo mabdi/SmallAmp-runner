@@ -8,7 +8,7 @@ parser = argparse.ArgumentParser(description='Evaluate SmallAmp on selected proj
 parser.add_argument('-p', '--project', help='Process on just specified project')
 parser.add_argument('-s', '--step', help='Process only specified step' , choices=['vm', 'load', 'stat', 'amp', 'reload', 'ampui'] )
 parser.add_argument('-f', '--force', help='Use force' , action='store_true')
-parser.add_argument('-r', '--report', help='Generate report',  choices=['stat', 'amp'])
+parser.add_argument('-r', '--report', help='Generate report',  choices=['stat', 'amp', 'sum'])
 
 args = parser.parse_args()
 force = args.force
@@ -59,6 +59,8 @@ def reportMain():
             reportStat(p['name'])
          elif report == 'amp':
             reportAmp(p['name'])
+         elif report == 'sum':
+            reportSum(p['name'])
 
 print('Script started at: ', datetime.now().strftime("%m/%d/%Y, %H:%M:%S"))
 if not report is None:
