@@ -25,12 +25,15 @@ def reportSum(projectName):
    data = reportAmp_backend(projectName)
    max_imp = -101
    sum_imp = 0
+   sum_time = 0
    n_fail = 0
    for row in data:
-      if row['stat'] in {'fail','error'}:
+#      print(row['stat'])
+      if row['stat'] != 'success':
          n_fail += 1
       else:
          jsonObj = row['jsonObj']
+         sum_time += jsonObj['timeTotal']
          imp = jsonObj['mutationScoreAfter'] - jsonObj['mutationScoreBefore']
          sum_imp += imp
          if imp > max_imp:
@@ -40,14 +43,14 @@ def reportSum(projectName):
    n_imp_less = 0
    n_imp_more = 0
    for row in data:
-      if row['stat'] not in {'fail','error'}:
+      if row['stat'] == 'success':
          jsonObj = row['jsonObj']
          imp = jsonObj['mutationScoreAfter'] - jsonObj['mutationScoreBefore']
          if imp >= avg_imp:
             n_imp_more += 1
          else:
             n_imp_less += 1
-   print(','.join(str(x) for x in [projectName, n_cases, max_imp, n_fail, avg_imp, n_imp_less, n_imp_more]))
+   print(','.join(str(x) for x in [projectName, n_cases, max_imp, n_fail, avg_imp, n_imp_less, n_imp_more, sum_time]))
 
 
 def reportAmp(projectName):
@@ -118,7 +121,9 @@ def reportAmp_backend(projectName):
             if jsonObj:
                result.append({'stat':'success','className':className,'jsonObj':jsonObj})
                continue
-
+      if not os.path.exists(directory + '/out/' + className + '.log'):
+         result.append({'stat':'unknown','className':className})
+         continue
       with open(directory + '/out/' + className + '.log') as f:
          log = f.read()
       if not "Run finish" in log:
