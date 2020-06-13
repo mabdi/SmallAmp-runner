@@ -30,7 +30,7 @@ def makeStat(force, projectName, projectPrefix, projectFile):
    destinationURL = projectsDirectory + projectName
    cwd = os.getcwd()
    os.chdir(destinationURL)
-   os.system(pharoVM + ' Pharo.image smallamp --stat={} > projectStat.log'.format( projectPrefix ) )
+   os.system(pharoVM + ' Pharo.image smallamp --stat={} > projectStat.log 2>&1'.format( projectName ) )
    #os.system(pharoVM + ' Pharo.image st '+ statStFileName +' --save --quit > projectStat.log')
    os.chdir(cwd)
 
@@ -43,7 +43,7 @@ def loadProject(force, projectName, projectPrefix, projectFile):
    destinationURL = projectsDirectory + projectName
    cwd = os.getcwd()
    os.chdir(destinationURL)
-   os.system(pharoVM + ' Pharo.image st '+ loaderStFileName +' --save --quit > projectLoad.log')
+   os.system(pharoVM + ' Pharo.image st '+ loaderStFileName +' --save --quit > projectLoad.log 2>&1')
    os.chdir(cwd)
 
 
@@ -87,6 +87,9 @@ def runAmplification(force, projectName):
 
 def runAmplificationBackend(proc ,force, projectName):
    todoFile = projectsDirectory + projectName + '/' + todoFileName
+   if not os.path.exists(todoFile):
+     print('todo file not found, skipping')
+     return
    with open(todoFile,"r") as f:
       todo = f.readlines()
 
@@ -108,7 +111,7 @@ def runAmplificationBackend(proc ,force, projectName):
               f.write(':')
               f.write(className)
           cmd = 'SmallAmp initializeDefault testCase: {} ; amplifyEval'.format( className )
-          os.system(proc + ' Pharo.image eval --save \''+ cmd  +'\' > out/'+ className +'.log')
+          os.system(proc + ' Pharo.image eval --save \''+ cmd  +'\' > out/'+ className +'.log 2>&1')
           os.chdir(cwd)
           markAsDone(projectName, className)
        else:

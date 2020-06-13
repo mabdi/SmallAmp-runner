@@ -23,8 +23,12 @@ def reportStat(projectName):
 
 def reportSum(projectName):
    data = reportAmp_backend(projectName)
+   if not data:
+     return (projectName + ',unknown')
    max_imp = -101
    sum_imp = 0
+   sum_imp_no100 = 0
+   n_no100 = 0
    sum_time = 0
    n_fail = 0
    for row in data:
@@ -36,25 +40,32 @@ def reportSum(projectName):
          sum_time += jsonObj['timeTotal']
          imp = jsonObj['mutationScoreAfter'] - jsonObj['mutationScoreBefore']
          sum_imp += imp
+         if jsonObj['mutationScoreBefore'] < 100:
+            n_no100 += 1
+            sum_imp_no100 += imp
          if imp > max_imp:
             max_imp = imp
    n_cases = len(data)
    avg_imp = sum_imp / n_cases
+   avg_imp_n100 = sum_imp_no100 / n_no100
    n_imp_less = 0
    n_imp_more = 0
    for row in data:
       if row['stat'] == 'success':
          jsonObj = row['jsonObj']
          imp = jsonObj['mutationScoreAfter'] - jsonObj['mutationScoreBefore']
-         if imp >= avg_imp:
+         if imp >= avg_imp_n100:
             n_imp_more += 1
          else:
             n_imp_less += 1
-   print(','.join(str(x) for x in [projectName, n_cases, max_imp, n_fail, avg_imp, n_imp_less, n_imp_more, sum_time]))
+   print(','.join(str(x) for x in [projectName, n_cases, max_imp, n_fail, avg_imp, n_imp_less, n_imp_more, sum_time, avg_imp_n100, n_no100 ]))
 
 
 def reportAmp(projectName):
    data = reportAmp_backend(projectName)
+   if not data:
+      print(projectName + ',unknown')
+      return
    for row in data:
       if row['stat'] == 'success':
           jsonObj = row['jsonObj']
@@ -98,11 +109,13 @@ def reportAmp_backend(projectName):
    result = []
    directory = projectsDirectory + projectName
    todoFile = projectsDirectory + projectName + '/' + todoFileName
+   if not os.path.exists(todoFile):
+      return None
+
    json_files = [pos_json for pos_json in os.listdir(directory) if pos_json.endswith('.json')] # changed to .json
    with open(blacklistfile) as f:
       blacklistclasses = f.readlines()
    blacklistclasses = [s.strip() for s in blacklistclasses]
-
    with open(todoFile,"r") as f:
       todo = f.readlines()
    for cname in todo:
