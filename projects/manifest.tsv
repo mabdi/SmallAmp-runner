@@ -6,18 +6,14 @@ PolyMath	Math	PolyMath.txt	https://github.com/PolyMathOrg/PolyMath
 GraphQL	GraphQL	GraphQL.txt	https://github.com/OBJECTSEMANTICS/GraphQL
 Polyglot	PG	Polyglot.txt	https://github.com/pharo-ai/Polyglot
 DrTests	DrTests	DrTests.txt	https://github.com/juliendelplanque/DrTests
-iceberg	Iceberg	Iceberg.txt	https://github.com/pharo-vcs/iceberg
 HoneyGinger	HoneyGinger	HoneyGinger.txt	https://github.com/tomooda/HoneyGinger/
 clap-st	Clap	Clap.txt	https://github.com/cdlm/clap-st
-Collectors	Collectors	Collectors.txt	https://github.com/ClotildeToullec/Collectors
 Willow	Willow	Willow.txt	https://github.com/ba-st/Willow
 pharo-launcher	PharoLauncher	PharoLauncher.txt	https://github.com/pharo-project/pharo-launcher
-Calypso	Calypso	Calypso.txt	https://github.com/dionisiydk/Calypso
 SmartTest	SmartTest	SmartTest.txt	https://github.com/badetitou/SmartTest
 Jun	Jun	Jun.txt	https://github.com/tomooda/Jun
 openponk	OpenPonk	OpenPonk.txt	https://github.com/OpenPonk/openponk
 Bloc	BLOC	BLOC.txt	https://github.com/pharo-graphics/Bloc
-Griotte	Griotte	Griotte.txt	https://github.com/Balletie/Griotte
 Spy2	Spy2	Spy2.txt	https://github.com/ObjectProfile/Spy2
 Telescope	Telescope	Telescope.txt	https://github.com/TelescopeSt/Telescope
 Buoy	Buoy	Buoy.txt	https://github.com/ba-st/Buoy
@@ -28,4 +24,4 @@ RenoirSt	RenoirSt	RenoirSt.txt	https://github.com/ba-st/RenoirSt/
 Seaside	Seaside	Seaside.txt	https://github.com/SeasideSt/Seaside
 zinc	Zinc	Zinc.txt	https://github.com/svenvc/zinc
 Roassal3	roassal3	roassal3.txt	https://github.com/ObjectProfile/Roassal3
-Dataframe	dataframe	dataframe.txt	https://github.com/PolyMathOrg/DataFrame
+DataFrame	dataframe	dataframe.txt	https://github.com/PolyMathOrg/DataFrame

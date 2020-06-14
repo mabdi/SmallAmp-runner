@@ -5,6 +5,55 @@ import re
 import json
 from config import *
 
+#this = sys.modules[__name__]
+
+def mut_to_string(mut):
+    return '-'.join([mut['operatorDescription'], mut['class'], mut['operatorClass'], mut['method'], str(mut['mutationStart']), str(mut['mutationEnd'])])
+
+#this.current_n = -1
+
+def an_print(msg, more_det=None, verbose=False):
+   """this.current_n += 1
+   if n_anomaly == -1:
+      print(str(this.current_n) + ': ' + msg)
+   if n_anomaly > -1 and n_anomaly == this.current_n:
+      print(str(this.current_n) + ': ' + msg)
+      print('--more details--' + str(more_det))"""
+   print( msg)
+   if verbose:
+      print('--more details--' + str(more_det))
+
+def reportAnomalies(projectName, fix, verbose):
+   data = reportAmp_backend(projectName, fix)
+   if not data:
+     return (projectName + ',unknown')
+   for row in data:
+      if row['stat'] == 'success':
+          jsonObj = row['jsonObj']
+          imp = jsonObj['mutationScoreAfter'] - jsonObj['mutationScoreBefore']
+          before = {mut_to_string(x) for x in jsonObj['mutantsAliveInOriginal']}
+          after_killed = {mut_to_string(x) for x in jsonObj['killedInAmplified']}
+          after_alive = {mut_to_string(x) for x in jsonObj['stillAliveMutants']}
+
+          if  imp <  0:
+             an_print(projectName + ',' + row['className'] + ',' + 'negative amplification')
+          if len(jsonObj['amplifiedMethods'])== 0 and imp != 0:
+             an_print(projectName + ',' + row['className'] + ',' + 'no new method but change in score')
+          if len(jsonObj['killedInAmplified']) + len(jsonObj['stillAliveMutants']) !=  len(jsonObj['mutantsAliveInOriginal']):
+             an_print(projectName + ',' + row['className'] + ',' + 'mutation stat size mismatch')
+          an1 = after_killed.union(after_alive) - before
+          if len(an1)>0:
+             an_print(projectName + ',' + row['className'] + ',' + 'new mutation after', str(an1), verbose)
+          an2 = before - after_killed.union(after_alive) 
+          if len(an2)>0:
+             an_print(projectName + ',' + row['className'] + ',' + 'new mutation before', str(an2), verbose)
+      else:
+          if 'className' in row.keys():
+             an_print(projectName + ',' + row['className'] + ',' + row['stat'])
+          else:
+             an_print(projectName + ',' + row['stat'], json.dumps(row), verbose)
+
+
 def reportStat(projectName):
    statFile = projectsDirectory + projectName + '/' + statStFileName
    with open(statFile) as f:
@@ -21,8 +70,8 @@ def reportStat(projectName):
    ]))
 
 
-def reportSum(projectName):
-   data = reportAmp_backend(projectName)
+def reportSum(projectName, fix):
+   data = reportAmp_backend(projectName,fix )
    if not data:
      return (projectName + ',unknown')
    max_imp = -101
@@ -46,8 +95,8 @@ def reportSum(projectName):
          if imp > max_imp:
             max_imp = imp
    n_cases = len(data)
-   avg_imp = sum_imp / n_cases
-   avg_imp_n100 = sum_imp_no100 / n_no100
+   avg_imp = sum_imp / n_cases if n_cases != 0 else 0
+   avg_imp_n100 = sum_imp_no100 / n_no100 if n_no100 != 0 else 0
    n_imp_less = 0
    n_imp_more = 0
    for row in data:
@@ -60,11 +109,20 @@ def reportSum(projectName):
             n_imp_less += 1
    print(','.join(str(x) for x in [projectName, n_cases, max_imp, n_fail, avg_imp, n_imp_less, n_imp_more, sum_time, avg_imp_n100, n_no100 ]))
 
+def do_fix(result):
+   for row in result:
+      if row['stat'] == 'success':
+         jsonObj = row['jsonObj']
+         if len(jsonObj['amplifiedMethods']) == 0:
+            jsonObj['mutationScoreAfter'] = jsonObj['mutationScoreBefore']
+         row['jsonObj'] = jsonObj
+   return result
 
-def reportAmp(projectName):
-   data = reportAmp_backend(projectName)
+
+def reportAmp(projectName, fix):
+   data = reportAmp_backend(projectName, fix)
    if not data:
-      print(projectName + ',unknown')
+      print(projectName + ',,unknown')
       return
    for row in data:
       if row['stat'] == 'success':
@@ -102,10 +160,10 @@ def reportAmp(projectName):
       elif row['stat'] == 'blacklist':
           print(projectName + ',' + row['className'] + ',' + 'Skipped (blacklist)')
       else:
-          print('shet!')
+          print('shet!' + json.dumps(row))
 
 
-def reportAmp_backend(projectName):
+def reportAmp_backend(projectName, fix):
    result = []
    directory = projectsDirectory + projectName
    todoFile = projectsDirectory + projectName + '/' + todoFileName
@@ -137,8 +195,13 @@ def reportAmp_backend(projectName):
       if not os.path.exists(directory + '/out/' + className + '.log'):
          result.append({'stat':'unknown','className':className})
          continue
-      with open(directory + '/out/' + className + '.log') as f:
-         log = f.read()
+      try:
+         with open(directory + '/out/' + className + '.log') as f:
+            log = f.read()
+      except:
+         print('cannot read file: ', directory + '/out/' + className + '.log')
+         result.append({'stat':'fail','className':className})
+         continue
       if not "Run finish" in log:
          result.append({'stat':'fail','className':className})
       if "Error details" in log:
@@ -146,4 +209,6 @@ def reportAmp_backend(projectName):
          ampMethods = re.findall('assert amplification:(.+)',log)
          lastMethod = ampMethods[-1] if len(ampMethods) > 0 else ''
          result.append({'stat':'fail','className':className,'errDet':errDet, 'lastMethod': lastMethod})
+   if fix:
+      return do_fix(result)
    return result

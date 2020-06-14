@@ -8,13 +8,17 @@ parser = argparse.ArgumentParser(description='Evaluate SmallAmp on selected proj
 parser.add_argument('-p', '--project', help='Process on just specified project')
 parser.add_argument('-s', '--step', help='Process only specified step' , choices=['vm', 'load', 'stat', 'amp', 'reload', 'ampui'] )
 parser.add_argument('-f', '--force', help='Use force' , action='store_true')
-parser.add_argument('-r', '--report', help='Generate report',  choices=['stat', 'amp', 'sum'])
+parser.add_argument('-r', '--report', help='Generate report',  choices=['stat', 'amp', 'sum', 'anm'])
+parser.add_argument('-v', '--verbose', help='Verbose', action='store_true')
+parser.add_argument('-x', '--fix', help='fix scores', action='store_true')
 
 args = parser.parse_args()
 force = args.force
 step = args.step
 project =args.project
 report = args.report
+verbose = args.verbose
+fix = args.fix
 
 def parseManifest(manifestFile):
    manifest = []
@@ -58,9 +62,11 @@ def reportMain():
          if report == 'stat':
             reportStat(p['name'])
          elif report == 'amp':
-            reportAmp(p['name'])
+            reportAmp(p['name'],fix)
          elif report == 'sum':
-            reportSum(p['name'])
+            reportSum(p['name'],fix)
+         elif report == 'anm':
+            reportAnomalies(p['name'],fix , verbose)
 
 print('Script started at: ', datetime.now().strftime("%m/%d/%Y, %H:%M:%S"))
 if not report is None:
