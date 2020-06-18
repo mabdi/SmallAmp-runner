@@ -6,7 +6,7 @@ from reports import *
 
 parser = argparse.ArgumentParser(description='Evaluate SmallAmp on selected projects.')
 parser.add_argument('-p', '--project', help='Process on just specified project')
-parser.add_argument('-s', '--step', help='Process only specified step' , choices=['vm', 'load', 'stat', 'amp', 'reload', 'ampui'] )
+parser.add_argument('-s', '--step', help='Process only specified step' , choices=['vm', 'load', 'stat', 'amp', 'reload', 'ampui', 'prepare'] )
 parser.add_argument('-f', '--force', help='Use force' , action='store_true')
 parser.add_argument('-r', '--report', help='Generate report',  choices=['stat', 'amp', 'sum', 'anm'])
 parser.add_argument('-v', '--verbose', help='Verbose', action='store_true')
@@ -46,14 +46,14 @@ def processMain():
         if step is None or step == 'amp':
            runAmplification(force, p['name'])
         if step == 'ampui':
+           runAmplificationUI(force, p['name'])
+        if step == 'prepare':
            print('dup vm:')
            duplicateVM(force, p['name'])
            print('load proj:')
            loadProject(force, p['name'], p['prefix'], p['file'])
            print('make stat:')
            makeStat(force, p['name'], p['prefix'], p['file'])
-           print('run:')
-           runAmplificationUI(force, p['name'])
 
 def reportMain():
    projects = parseManifest(manifestFile)
