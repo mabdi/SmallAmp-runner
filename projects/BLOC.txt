@@ -1,4 +1,4 @@
 Metacello new
         baseline: 'Bloc';
-        repository: 'github://feenkcom/Bloc/src';
+        repository: 'github://feenkcom/Bloc:release/src';
         load

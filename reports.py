@@ -23,6 +23,27 @@ def an_print(msg, more_det=None, verbose=False):
    if verbose:
       print('--more details--' + str(more_det))
 
+def get_median(lst):
+   idx = (len(lst) - 1) // 2
+   if len(lst) % 2:
+      return lst[idx], idx
+   else:
+      return ((lst[idx] + lst[idx+1]) / 2.0), idx
+
+def get_boxplot_infor(alist):
+   alist.sort()
+   #print(alist)
+   median, mid_idx = get_median(alist)
+   q1, q1_idx = get_median(alist[:mid_idx])
+   q3, q3_idx = get_median(alist[mid_idx:])
+   iqr = q3 - q1
+   minimum = max(min(alist), q1 - 1.5 * iqr)
+   maximum = min(max(alist), q3 + 1.5 * iqr)
+   out_min = [x for x in alist if x < minimum]
+   out_max = [x for x in alist if x > maximum]
+
+   return {"out_min": out_min, "out_min":out_min, "minimum":minimum, "maximum":maximum, "iqr":iqr, "q1":q1, "q3":q3, "median":median}
+
 def reportAnomalies(projectName, fix, verbose):
    data = reportAmp_backend(projectName, fix)
    if not data:
@@ -80,6 +101,7 @@ def reportSum(projectName, fix):
    n_no100 = 0
    sum_time = 0
    n_fail = 0
+   imps_no100 = []
    for row in data:
 #      print(row['stat'])
       if row['stat'] != 'success':
@@ -90,10 +112,13 @@ def reportSum(projectName, fix):
          imp = jsonObj['mutationScoreAfter'] - jsonObj['mutationScoreBefore']
          sum_imp += imp
          if jsonObj['mutationScoreBefore'] < 100:
+            imps_no100.append(imp)
             n_no100 += 1
             sum_imp_no100 += imp
          if imp > max_imp:
             max_imp = imp
+   #print(imps_no100)
+   bpi = get_boxplot_infor(imps_no100)
    n_cases = len(data)
    avg_imp = sum_imp / n_cases if n_cases != 0 else 0
    avg_imp_n100 = sum_imp_no100 / n_no100 if n_no100 != 0 else 0
@@ -107,7 +132,8 @@ def reportSum(projectName, fix):
             n_imp_more += 1
          else:
             n_imp_less += 1
-   print(','.join(str(x) for x in [projectName, n_cases, max_imp, n_fail, avg_imp, n_imp_less, n_imp_more, sum_time, avg_imp_n100, n_no100 ]))
+
+   print(','.join(str(x) for x in [projectName, n_cases, max_imp, n_fail, avg_imp, n_imp_less, n_imp_more, sum_time, avg_imp_n100, n_no100, bpi['q1'],bpi['q3'],bpi['minimum'],bpi['maximum'],bpi['median']  ]))
 
 def do_fix(result):
    for row in result:
