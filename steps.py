@@ -34,6 +34,44 @@ def makeStat(force, projectName, projectPrefix, projectFile):
    #os.system(pharoVM + ' Pharo.image st '+ statStFileName +' --save --quit > projectStat.log')
    os.chdir(cwd)
 
+def makeExtra(force, projectName, projectPrefix, projectFile):
+   todoFile = projectsDirectory + projectName + '/' + todoFileName
+   destinationURL = projectsDirectory + projectName
+   if not os.path.exists(todoFile):
+     print('todo file not found, skipping')
+     return
+   with open(todoFile,"r") as f:
+      todo = f.readlines()
+
+   for cname in todo:
+       className = cname.strip()
+       if not className:
+          continue
+#       if className in blackList():
+#          print('Skipping ' + className + ' -- blacklist')
+#          continue
+       if os.path.exists(destinationURL + "/"+ className + '.json'):
+         cwd = os.getcwd()
+         os.chdir(destinationURL)
+         #os.system(pharoVM + ' Pharo.image smallamp --xinfo={} > out/{}.xlog 2>&1'.format( className, className ) )
+         os.system(pharoVM + ' Pharo.image smallamp --xinfo={} --nosave'.format( className) )
+         os.chdir(cwd)
+       else:
+          print('Skipping: ' + className + ' -- not done yet')
+
+
+   installerURL = projectsDirectory + projectName + '/' + statStFileName
+   if not force and os.path.exists(installerURL):
+      print('State file found. skip stat step.')
+      return
+   #with open(templateFile, "r") as f:
+   #   template = f.read()
+   #with open(installerURL, "w") as f:
+   #   f.write(template.format(projectPrefix))
+   #print('StatScript is made '+ installerURL)
+
+
+
 def loadProject(force, projectName, projectPrefix, projectFile):
    loaderFile = projectsDirectory + projectName + '/' + loaderStFileName
    if not force and os.path.exists(loaderFile):

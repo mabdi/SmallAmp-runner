@@ -4,7 +4,6 @@ import sys
 import re
 import json
 from config import *
-from collections import Counter
 
 #this = sys.modules[__name__]
 
@@ -12,15 +11,6 @@ def mut_to_string(mut):
     return '-'.join([mut['operatorDescription'], mut['class'], mut['operatorClass'], mut['method'], str(mut['mutationStart']), str(mut['mutationEnd'])])
 
 #this.current_n = -1
-
-def number_of_changes(list_of_methods):
-    return [ re.search(r"_amp(.*)$", txt).group(1).count('_') for txt in list_of_methods]
-
-def count_killed_mutants(lst):
-   return Counter([ mut['operatorClass'] for mut in lst])
-
-def mutation_list_compare_covered_list(covered, mutatans):
-   return [ mut for mut in mutants if mut['class']+'>>#'+mut['method'] in covered]
 
 def an_print(msg, more_det=None, verbose=False):
    """this.current_n += 1
@@ -109,10 +99,9 @@ def reportSum(projectName, fix):
    sum_imp = 0
    sum_imp_no100 = 0
    n_no100 = 0
-   all_new_killed = 0
-   all_new_methods = 0
    sum_time = 0
    n_fail = 0
+   all_new_
    imps_no100 = []
    for row in data:
 #      print(row['stat'])
@@ -123,8 +112,6 @@ def reportSum(projectName, fix):
          sum_time += jsonObj['timeTotal']
          imp = jsonObj['mutationScoreAfter'] - jsonObj['mutationScoreBefore']
          sum_imp += imp
-         all_new_killed += len(jsonObj['killedInAmplified'])
-         all_new_methods += len(jsonObj['amplifiedMethods'])
          if jsonObj['mutationScoreBefore'] < 100:
             imps_no100.append(imp)
             n_no100 += 1
@@ -147,7 +134,7 @@ def reportSum(projectName, fix):
          else:
             n_imp_less += 1
 
-   print(','.join(str(x) for x in [projectName, n_cases, max_imp, n_fail, avg_imp, n_imp_less, n_imp_more, sum_time, avg_imp_n100, n_no100, all_new_methods, all_new_killed, bpi['q1'],bpi['q3'],bpi['minimum'],bpi['maximum'],bpi['median']  ]))
+   print(','.join(str(x) for x in [projectName, n_cases, max_imp, n_fail, avg_imp, n_imp_less, n_imp_more, sum_time, avg_imp_n100, n_no100, bpi['q1'],bpi['q3'],bpi['minimum'],bpi['maximum'],bpi['median']  ]))
 
 def do_fix(result):
    for row in result:
@@ -167,20 +154,6 @@ def reportAmp(projectName, fix):
    for row in data:
       if row['stat'] == 'success':
           jsonObj = row['jsonObj']
-          xjson = row['xjson']
-          if not xjson:
-             xjson = {'targetChurn': 'NA',
-			'testChurn': 'NA',
-			'assertionDensityOriginal': 'NA',
-			'assertionDensityAmplified': 'NA',
-			'originalCoverageStatementes': 'NA',
-			'amplifiedCoverageStatementes': 'NA',
-			'originalCoverageBranches': 'NA',
-			'amplifiedCoverageBranches': 'NA',
-			'originalCoverageMethods': 'NA',
-			'amplifiedCoverageMethods': 'NA',
-			'directTestingOriginal': 'NA'
-		}
           print(projectName + ',' + row['className'] + ',' + 'Finished successfully' + ',' + ','.join(str(x) for x in [
                   jsonObj['amplifiedClass'],
                   ' '.join(jsonObj['targetClasses']),
@@ -190,25 +163,22 @@ def reportAmp(projectName, fix):
                   jsonObj['targetLoc'],
                   jsonObj['testLoc'],
                   jsonObj['testAmpLoc'],
-#                 xjson['targetChurn'],
-#                 xjson['testChurn'],
-                  xjson['assertionDensityOriginal'],
-                  xjson['assertionDensityAmplified'],
-                  xjson['originalCoverageStatementes'],
-                  xjson['amplifiedCoverageStatementes'],
-                  xjson['originalCoverageBranches'],
-                  xjson['amplifiedCoverageBranches'],
-                  xjson['originalCoverageMethods'],
-                  xjson['amplifiedCoverageMethods'],
-                  xjson['directTestingOriginal'],
+#                 jsonObj['targetChurn'],
+#                 jsonObj['testChurn'],
+                  jsonObj['assertionDensityOriginal'],
+                  jsonObj['assertionDensityAmplified'],
+                  jsonObj['originalCoverageStatementes'],
+                  jsonObj['amplifiedCoverageStatementes'],
+                  jsonObj['originalCoverageBranches'],
+                  jsonObj['amplifiedCoverageBranches'],
+                  jsonObj['originalCoverageMethods'],
+                  jsonObj['amplifiedCoverageMethods'],
                   len(jsonObj['amplifiedMethods']),
                   len(jsonObj['mutantsAliveInOriginal']),
                   len(jsonObj['killedInAmplified']),
                   len(jsonObj['stillAliveMutants']),
                   len(jsonObj['methodsNotProfiled']),
-                  jsonObj['timeTotal'],
-                  max(number_of_changes(jsonObj['amplifiedMethods']) or [0])
-
+                  jsonObj['timeTotal']
                ]))
       elif row['stat'] == 'error':
           print(projectName + ',' + row['className'] + ',' + 'Finished with Error ({}) {}'.format(row['errDet'],row['lastMethod']))
@@ -235,7 +205,6 @@ def reportAmp_backend(projectName, fix):
       todo = f.readlines()
    for cname in todo:
       jsonObj = None
-      xjson = None
       className = cname.strip()
       if className in blacklistclasses:
          result.append({'stat':'blacklist','className':className})
@@ -247,16 +216,8 @@ def reportAmp_backend(projectName, fix):
                 jsonObj = json.loads(jsonStr)
             except:
                 pass
-            if os.path.exists(directory + "/"+ className + '.xjson'):
-               with open(directory + "/"+ className + '.xjson') as f:
-                   jsonStrx = f.read()
-               try:
-                   xjson = json.loads(jsonStrx)
-               except:
-                   pass
-
             if jsonObj:
-               result.append({'stat':'success','className':className,'jsonObj':jsonObj,'xjson': xjson})
+               result.append({'stat':'success','className':className,'jsonObj':jsonObj})
                continue
       if not os.path.exists(directory + '/out/' + className + '.log'):
          result.append({'stat':'unknown','className':className})
