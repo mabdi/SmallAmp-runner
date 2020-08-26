@@ -41,6 +41,8 @@ def get_median(lst):
       return ((lst[idx] + lst[idx+1]) / 2.0), idx
 
 def get_boxplot_infor(alist):
+   if len(alist)<4:
+     return {"out_min": -1, "out_min":-1, "minimum":-1, "maximum":-1, "iqr":-1, "q1":-1, "q3":-1, "median":-1}
    alist.sort()
    #print(alist)
    median, mid_idx = get_median(alist)
@@ -86,23 +88,35 @@ def reportAnomalies(projectName, fix, verbose):
 
 
 def reportStat(projectName):
-   statFile = projectsDirectory + projectName + '/' + statStFileName
+   d = reportStat_backend(projectName)
+   if d:
+      print(','.join(str(x) for x in reportStat_backend(projectName) ))
+
+def reportStat_backend(projectName):
+   statFile = projectsDirectory + projectName + '/' + projectName + '.stat'
+   if not os.path.exists(statFile):
+      #print('file not found: '+ statFile)
+      return []
    with open(statFile) as f:
       stat = f.read()
-   matches = re.findall("#(\w+)->(\d+)\.?", stat)
-   matches = {tuple[0]:int(tuple[1]) for tuple in matches}
-   print(projectName + '\t' + ','.join(str(x) for x in [
-        1 if matches['testsFails'] ==0 and matches['testsErrors'] ==0 else 0,
-        matches['packages'],
+   matches = re.findall("#(\w+)->(true|false|\d+|'[0-9a-z]+')\.?", stat)
+   matches = {tuple[0]:tuple[1] for tuple in matches}
+   if 'commitId' not in matches.keys():
+      matches['commitId'] = 'NA'
+   return [str(x) for x in [
+        projectName,
+        matches['allGreen'],
         matches['classes'],
         matches['tests'],
-        matches['focousedTests'],
-        matches['focousedTestsMethods']
-   ]))
+        matches['targetedTests'],
+        matches['targetedTestsMethods'],
+        matches['commitId']
+   ]]
 
 
 def reportSum(projectName, fix):
    data = reportAmp_backend(projectName,fix )
+   stat = reportStat_backend(projectName)
    if not data:
      return (projectName + ',unknown')
    max_imp = -101
@@ -122,6 +136,8 @@ def reportSum(projectName, fix):
          jsonObj = row['jsonObj']
          sum_time += jsonObj['timeTotal']
          imp = jsonObj['mutationScoreAfter'] - jsonObj['mutationScoreBefore']
+         if imp < 0:
+           continue 
          sum_imp += imp
          all_new_killed += len(jsonObj['killedInAmplified'])
          all_new_methods += len(jsonObj['amplifiedMethods'])
@@ -147,7 +163,11 @@ def reportSum(projectName, fix):
          else:
             n_imp_less += 1
 
-   print(','.join(str(x) for x in [projectName, n_cases, max_imp, n_fail, avg_imp, n_imp_less, n_imp_more, sum_time, avg_imp_n100, n_no100, all_new_methods, all_new_killed, bpi['q1'],bpi['q3'],bpi['minimum'],bpi['maximum'],bpi['median']  ]))
+   print(','.join(str(x) for x in [projectName, n_cases, max_imp, n_fail, avg_imp, n_imp_less, 
+            n_imp_more, sum_time, avg_imp_n100, n_no100, all_new_methods, all_new_killed, 
+            bpi['q1'],bpi['q3'],bpi['minimum'],bpi['maximum'],bpi['median'],
+            stat[1], stat[2],stat[3],stat[4],stat[5],stat[6]
+         ]))
 
 def do_fix(result):
    for row in result:
@@ -190,8 +210,6 @@ def reportAmp(projectName, fix):
                   jsonObj['targetLoc'],
                   jsonObj['testLoc'],
                   jsonObj['testAmpLoc'],
-#                 xjson['targetChurn'],
-#                 xjson['testChurn'],
                   xjson['assertionDensityOriginal'],
                   xjson['assertionDensityAmplified'],
                   xjson['originalCoverageStatementes'],
@@ -200,13 +218,15 @@ def reportAmp(projectName, fix):
                   xjson['amplifiedCoverageBranches'],
                   xjson['originalCoverageMethods'],
                   xjson['amplifiedCoverageMethods'],
-                  xjson['directTestingOriginal'],
                   len(jsonObj['amplifiedMethods']),
                   len(jsonObj['mutantsAliveInOriginal']),
                   len(jsonObj['killedInAmplified']),
                   len(jsonObj['stillAliveMutants']),
                   len(jsonObj['methodsNotProfiled']),
                   jsonObj['timeTotal'],
+                  xjson['targetChurn'],
+                  xjson['testChurn'],
+                  xjson['directTestingOriginal'],
                   max(number_of_changes(jsonObj['amplifiedMethods']) or [0])
 
                ]))

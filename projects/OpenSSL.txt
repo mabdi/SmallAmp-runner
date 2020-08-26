@@ -1,0 +1,4 @@
+Metacello new
+  baseline: 'OpenSSL';
+  repository: 'github://PierceNg/OpenSSL-Pharo:openssl_1_1/src-st';
+  load.

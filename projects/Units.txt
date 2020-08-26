@@ -1,0 +1,4 @@
+Metacello new
+	githubUser: 'zweidenker' project: 'Units' commitish: 'master' path: 'src';
+	baseline: 'Units';
+	load

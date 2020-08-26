@@ -1,0 +1,4 @@
+Metacello new
+  baseline: 'Seamless';
+  repository: 'github://pharo-ide/Seamless';
+  load

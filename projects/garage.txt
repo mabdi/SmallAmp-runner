@@ -1,0 +1,4 @@
+Metacello new
+	githubUser: 'pharo-rdbms' project: 'garage' commitish: 'master' path: '';
+	baseline: 'Garage';
+	load

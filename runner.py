@@ -6,7 +6,7 @@ from reports import *
 
 parser = argparse.ArgumentParser(description='Evaluate SmallAmp on selected projects.')
 parser.add_argument('-p', '--project', help='Process on just specified project')
-parser.add_argument('-s', '--step', help='Process only specified step' , choices=['vm', 'load', 'stat', 'amp', 'reload', 'ampui', 'prepare', 'extra'] )
+parser.add_argument('-s', '--step', help='Process only specified step' , choices=['vm', 'load', 'stat', 'amp', 'reload', 'ampui', 'prepare', 'extra', 'cleanup'] )
 parser.add_argument('-f', '--force', help='Use force' , action='store_true')
 parser.add_argument('-r', '--report', help='Generate report',  choices=['stat', 'amp', 'sum', 'anm'])
 parser.add_argument('-v', '--verbose', help='Verbose', action='store_true')
@@ -33,8 +33,11 @@ def parseManifest(manifestFile):
 
 def processMain():
    projects = parseManifest(manifestFile)
-   if step is None or project is None:
+   if step is None and project is None:
      parser.print_help()
+     return
+   if step == 'cleanup' and project is None and not force:
+     print('Specify a project or use -f')
      return
    for p in projects:
      if project is None or project == p['name']:
@@ -59,6 +62,8 @@ def processMain():
            loadProject(force, p['name'], p['prefix'], p['file'])
            print('make stat:')
            makeStat(force, p['name'], p['prefix'], p['file'])
+        if step == 'cleanup':
+           cleanup(force, p['name'], p['prefix'], p['file'])
 
 def reportMain():
    projects = parseManifest(manifestFile)

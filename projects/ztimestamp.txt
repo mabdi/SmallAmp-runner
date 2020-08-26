@@ -1,0 +1,4 @@
+Metacello new
+  baseline: 'ZTimestamp';
+  repository: 'github://svenvc/ztimestamp';
+  load.

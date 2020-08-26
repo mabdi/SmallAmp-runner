@@ -1,0 +1,4 @@
+Metacello new 
+	repository: 'github://demarey/cargo/repository';
+	baseline: 'Cargo';
+	load: 'client'

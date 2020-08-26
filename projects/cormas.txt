@@ -1,0 +1,5 @@
+Metacello new
+	onWarningLog;
+	repository: 'github://cormas/cormas/repository';
+	baseline: 'Cormas';
+	load.

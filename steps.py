@@ -34,6 +34,19 @@ def makeStat(force, projectName, projectPrefix, projectFile):
    #os.system(pharoVM + ' Pharo.image st '+ statStFileName +' --save --quit > projectStat.log')
    os.chdir(cwd)
 
+def cleanup(force, projectName, projectPrefix, projectFile):
+   destinationURL = projectsDirectory + projectName
+   if not os.path.exists(destinationURL):
+       print('Project folder not found')
+       return
+   cwd = os.getcwd()
+   os.chdir(destinationURL)
+   os.system( 'rm ./Pharo.changes' )
+   os.system( 'rm ./Pharo.image' )
+   os.system( 'rm ./Pharo8*.sources' )
+   os.system( 'rm -rf ./pharo-local' )
+   os.chdir(cwd)
+
 def makeExtra(force, projectName, projectPrefix, projectFile):
    todoFile = projectsDirectory + projectName + '/' + todoFileName
    destinationURL = projectsDirectory + projectName
@@ -113,7 +126,8 @@ def reloadSmallAmp(force, projectName):
    destinationURL = projectsDirectory + projectName
    cwd = os.getcwd()
    os.chdir(destinationURL)
-   os.system(pharoVM + " Pharo.image eval --save \"((IceRepository registry detect: [ :r | r name = 'small-amp' ]) pull) branch commits first id\"")
+   #os.system(pharoVM + " Pharo.image eval --save \"((IceRepository registry detect: [ :r | r name = 'small-amp' ]) pull) branch commits first id\"")
+   os.system(pharoVM + " Pharo.image eval --save \"IceRepository registry detect: [ :r | r name = 'small-amp' ] ifFound: [ :r | r pullFrom: r remotes first. ^ r branch commits first shortId ]\"")
    os.chdir(cwd)
 
 def runAmplificationUI(force, projectName):

@@ -1,0 +1,4 @@
+Metacello new
+    baseline: 'SmaCC';
+    repository: 'github://SmaCCRefactoring/SmaCC';
+    load
