@@ -6,6 +6,8 @@ from datetime import datetime
 import re
 import json
 from config import *
+from zipfile import ZipFile
+import time
 
 def duplicateVM(force, projectName):
    destinationURL = projectsDirectory + projectName
@@ -16,6 +18,24 @@ def duplicateVM(force, projectName):
           os.system('rm -rf ' + destinationURL)
        os.system('cp -r '+ baseAddress + ' ' + destinationURL)
        print('Image duplicated: '+ destinationURL)
+
+def packResult(force, projectName, projectPrefix, projectFile):
+   projectDirectory = projectsDirectory + projectName
+   zipFile = zipDirectory + projectName + str(int(time.time())) + '.zip'
+   file_paths = []
+   for filename in glob.glob(projectDirectory+'/*'):
+            if filename.lower().endswith(('.txt', '.log', '.st', '.json')):
+               file_paths.append(filename)
+
+   with ZipFile(zipFile, 'w') as zip:
+        for file in file_paths:
+            arcname = file[len(projectsDirectory):]
+            zip.write(file, arcname)
+
+def moveToMongo(force, projectName, projectPrefix, projectFile):
+   projectDirectory = projectsDirectory + projectName
+   command = "ls -1 "+projectDirectory+"/*.json | while read jsonfile; do mongoimport --db test --collection "+projectName+" --file $jsonfile ; done"
+   os.system(command)
 
 def makeStat(force, projectName, projectPrefix, projectFile):
    installerURL = projectsDirectory + projectName + '/' + statStFileName

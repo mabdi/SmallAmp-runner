@@ -65,14 +65,14 @@ def reportAnomalies(projectName, fix, verbose):
           jsonObj = row['jsonObj']
           imp = jsonObj['mutationScoreAfter'] - jsonObj['mutationScoreBefore']
           before = {mut_to_string(x) for x in jsonObj['mutantsAliveInOriginal']}
-          after_killed = {mut_to_string(x) for x in jsonObj['killedInAmplified']}
+          after_killed = {mut_to_string(x) for x in jsonObj['newCovered']}
           after_alive = {mut_to_string(x) for x in jsonObj['stillAliveMutants']}
 
           if  imp <  0:
              an_print(projectName + ',' + row['className'] + ',' + 'negative amplification')
           if len(jsonObj['amplifiedMethods'])== 0 and imp != 0:
              an_print(projectName + ',' + row['className'] + ',' + 'no new method but change in score')
-          if len(jsonObj['killedInAmplified']) + len(jsonObj['stillAliveMutants']) !=  len(jsonObj['mutantsAliveInOriginal']):
+          if len(jsonObj['newCovered']) + len(jsonObj['stillAliveMutants']) !=  len(jsonObj['mutantsAliveInOriginal']):
              an_print(projectName + ',' + row['className'] + ',' + 'mutation stat size mismatch')
           an1 = after_killed.union(after_alive) - before
           if len(an1)>0:
@@ -117,6 +117,7 @@ def reportStat_backend(projectName):
 def reportSum(projectName, fix):
    data = reportAmp_backend(projectName,fix )
    stat = reportStat_backend(projectName)
+   #print(data)
    if not data:
      return (projectName + ',unknown')
    max_imp = -101
@@ -136,10 +137,11 @@ def reportSum(projectName, fix):
          jsonObj = row['jsonObj']
          sum_time += jsonObj['timeTotal']
          imp = jsonObj['mutationScoreAfter'] - jsonObj['mutationScoreBefore']
+         #print(imp)
          if imp < 0:
            continue 
          sum_imp += imp
-         all_new_killed += len(jsonObj['killedInAmplified'])
+         all_new_killed += len(jsonObj['newCovered'])
          all_new_methods += len(jsonObj['amplifiedMethods'])
          if jsonObj['mutationScoreBefore'] < 100:
             imps_no100.append(imp)
@@ -220,7 +222,7 @@ def reportAmp(projectName, fix):
                   xjson['amplifiedCoverageMethods'],
                   len(jsonObj['amplifiedMethods']),
                   len(jsonObj['mutantsAliveInOriginal']),
-                  len(jsonObj['killedInAmplified']),
+                  len(jsonObj['newCovered']),
                   len(jsonObj['stillAliveMutants']),
                   len(jsonObj['methodsNotProfiled']),
                   jsonObj['timeTotal'],
@@ -244,6 +246,7 @@ def reportAmp_backend(projectName, fix):
    result = []
    directory = projectsDirectory + projectName
    todoFile = projectsDirectory + projectName + '/' + todoFileName
+   #print(os.path.exists(todoFile))
    if not os.path.exists(todoFile):
       return None
 
@@ -253,6 +256,7 @@ def reportAmp_backend(projectName, fix):
    blacklistclasses = [s.strip() for s in blacklistclasses]
    with open(todoFile,"r") as f:
       todo = f.readlines()
+   #print(12)
    for cname in todo:
       jsonObj = None
       xjson = None
