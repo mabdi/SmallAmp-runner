@@ -1,4 +1,4 @@
 Metacello new
     baseline: 'GraphQL';
-    repository: 'github://OBJECTSEMANTICS/GraphQL';
+    repository: 'github://mabdi/GraphQL:toamp';
     load.

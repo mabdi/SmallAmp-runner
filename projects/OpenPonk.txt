@@ -1,4 +1,4 @@
 Metacello new
      baseline: 'OpenPonk';
-     repository: 'github://openponk/openponk/repository';
+     repository: 'github://mabdi/openponk:toamp/repository';
      load: 'complete'

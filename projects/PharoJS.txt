@@ -1,4 +1,4 @@
 Metacello new
   baseline: 'PharoJS';
-  repository: 'github://PharoJS/PharoJS';
+  repository: 'github://mabdi/PharoJS:toamp';
   load

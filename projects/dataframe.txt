@@ -1,4 +1,4 @@
 Metacello new
   baseline: 'DataFrame';
-  repository: 'github://PolyMathOrg/DataFrame/src';
+  repository: 'github://mabdi/DataFrame:toamp/src';
   load.

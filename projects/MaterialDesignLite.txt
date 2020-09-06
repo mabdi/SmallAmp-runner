@@ -1,5 +1,5 @@
 Metacello new
-	githubUser: 'DuneSt' project: 'MaterialDesignLite' commitish: 'v2.x.x' path: 'src';
+	githubUser: 'mabdi' project: 'MaterialDesignLite' commitish: 'toamp' path: 'src';
 	baseline: 'MaterialDesignLite';
 	onWarningLog;
 	load

@@ -1,5 +1,5 @@
 Metacello new
-            githubUser: 'TelescopeSt' project: 'Telescope' commitish: 'v2.x.x' path: 'src';
+            githubUser: 'mabdi' project: 'Telescope' commitish: 'toamp' path: 'src';
             baseline: 'Telescope';
             onWarningLog;
                 onUpgrade: [ :e | e useIncoming ];

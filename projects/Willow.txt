@@ -1,4 +1,4 @@
 Metacello new
         baseline: 'Willow';
-        repository: 'github://ba-st/Willow:release-candidate/source';
+        repository: 'github://mabdi/Willow:toamp/source';
         load.

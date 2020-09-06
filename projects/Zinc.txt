@@ -1,4 +1,4 @@
 Metacello new
-  repository: 'github://svenvc/zinc/repository';
+  repository: 'github://mabdi/zinc:toamp/repository';
   baseline: 'ZincHTTPComponents';
   load.
