@@ -64,15 +64,15 @@ def reportAnomalies(projectName, fix, verbose):
       if row['stat'] == 'success':
           jsonObj = row['jsonObj']
           imp = jsonObj['mutationScoreAfter'] - jsonObj['mutationScoreBefore']
-          before = {mut_to_string(x) for x in jsonObj['mutantsAliveInOriginal']}
+          before = {mut_to_string(x) for x in jsonObj['notCoveredInOriginal']}
           after_killed = {mut_to_string(x) for x in jsonObj['newCovered']}
-          after_alive = {mut_to_string(x) for x in jsonObj['stillAliveMutants']}
+          after_alive = {mut_to_string(x) for x in jsonObj['notCoveredInAmplified']}
 
           if  imp <  0:
              an_print(projectName + ',' + row['className'] + ',' + 'negative amplification')
           if len(jsonObj['amplifiedMethods'])== 0 and imp != 0:
              an_print(projectName + ',' + row['className'] + ',' + 'no new method but change in score')
-          if len(jsonObj['newCovered']) + len(jsonObj['stillAliveMutants']) !=  len(jsonObj['mutantsAliveInOriginal']):
+          if len(jsonObj['newCovered']) + len(jsonObj['notCoveredInAmplified']) !=  len(jsonObj['notCoveredInOriginal']):
              an_print(projectName + ',' + row['className'] + ',' + 'mutation stat size mismatch')
           an1 = after_killed.union(after_alive) - before
           if len(an1)>0:
@@ -117,7 +117,7 @@ def reportStat_backend(projectName):
 def reportSum(projectName, fix):
    data = reportAmp_backend(projectName,fix )
    stat = reportStat_backend(projectName)
-   #print(data)
+   #print(stat)
    if not data:
      return (projectName + ',unknown')
    max_imp = -101
@@ -221,9 +221,9 @@ def reportAmp(projectName, fix):
                   xjson['originalCoverageMethods'],
                   xjson['amplifiedCoverageMethods'],
                   len(jsonObj['amplifiedMethods']),
-                  len(jsonObj['mutantsAliveInOriginal']),
+                  len(jsonObj['notCoveredInOriginal']),
                   len(jsonObj['newCovered']),
-                  len(jsonObj['stillAliveMutants']),
+                  len(jsonObj['notCoveredInAmplified']),
                   len(jsonObj['methodsNotProfiled']),
                   jsonObj['timeTotal'],
                   xjson['targetChurn'],
@@ -282,14 +282,17 @@ def reportAmp_backend(projectName, fix):
             if jsonObj:
                result.append({'stat':'success','className':className,'jsonObj':jsonObj,'xjson': xjson})
                continue
-      if not os.path.exists(directory + '/out/' + className + '.log'):
-         result.append({'stat':'unknown','className':className})
-         continue
+      logFile = directory +  '/' +  className + '.log'
+      if not os.path.exists(logFile):
+         logFile = directory + '/out/' + className + '.log'
+         if not os.path.exists(logFile):
+             result.append({'stat':'unknown','className':className})
+             continue
       try:
-         with open(directory + '/out/' + className + '.log') as f:
+         with open(logFile) as f:
             log = f.read()
       except:
-         print('cannot read file: ', directory + '/out/' + className + '.log')
+         print('cannot read file: ', logFile)
          result.append({'stat':'fail','className':className})
          continue
       if not "Run finish" in log:
@@ -298,7 +301,8 @@ def reportAmp_backend(projectName, fix):
          errDet = re.findall('Error details:(.+)',log)[0]
          ampMethods = re.findall('assert amplification:(.+)',log)
          lastMethod = ampMethods[-1] if len(ampMethods) > 0 else ''
-         result.append({'stat':'fail','className':className,'errDet':errDet, 'lastMethod': lastMethod})
+         result.append({'stat':'error','className':className,'errDet':errDet, 'lastMethod': lastMethod})
    if fix:
       return do_fix(result)
    return result
+
