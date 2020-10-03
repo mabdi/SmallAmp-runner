@@ -1,4 +1,6 @@
 Metacello new
      baseline: 'OpenPonk';
      repository: 'github://mabdi/openponk:toamp/repository';
+     onConflict: [ :conflict |
+		conflict allow ];
      load: 'complete'
