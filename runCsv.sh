@@ -1,6 +1,7 @@
 
-popSize=10
+popSize=100
 defaultConf=dspotAllamps
+cnf="SAConfig $defaultConf maxPop: $popSize; yourself"
 INPUT=data.csv
 OLDIFS=$IFS
 IFS=','
@@ -9,6 +10,6 @@ while read pname tname
 do
    echo "$pname $tname $popSize"
    cd ~/pharo-projects/$pname
-   ~/Pharo/pharo Pharo.image eval "(SmallAmp initializeWith: (SAConfig $defaultConf maxPop: $popSize; yourself)) testCase: $tname; amplifyEval"
+   ~/Pharo/pharo Pharo.image eval "(SmallAmp initializeWith: ($cnf)) testCase: $tname; amplifyEval"
 done < $INPUT
 IFS=$OLDIFS

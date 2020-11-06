@@ -151,13 +151,32 @@ def reloadSmallAmp(force, projectName):
    os.chdir(cwd)
 
 def runAmplificationUI(force, projectName):
-    return runAmplificationBackend(pharoVMUI ,force, projectName)
-
+    return runAmplificationBackend(pharoVMUI ,force, projectName, 'SAConfig default')
 
 def runAmplification(force, projectName):
-    return runAmplificationBackend(pharoVM ,force, projectName)
+    return runAmplificationBackend(pharoVM ,force, projectName, 'SAConfig default')
 
-def runAmplificationBackend(proc ,force, projectName):
+def runAmplificationCustom(force, projectName, cnf):
+    return runAmplificationBackend(pharoVM ,force, projectName, cnf)
+
+def runAmplificationClass(force, projectName, className):
+    return runClassAmplificationBackend(pharoVM ,force, projectName, className, 'SAConfig default')
+
+def runClassAmplificationBackend(proc ,force, projectName,className, cnf):
+   print('Amplifying: ' + className)
+   cwd = os.getcwd()
+   os.chdir(projectsDirectory + projectName)
+   if not os.path.exists('out'):
+      os.makedirs('out')
+   with open('/tmp/AmpCurrent.smallamp', 'w') as f:
+      f.write(projectName)
+      f.write(':')
+      f.write(className)
+   cmd = '(SmallAmp initializeWith: ({})) testCase: {} ; amplifyEval'.format( cnf, className )
+   os.system(proc + ' Pharo.image eval  \''+ cmd  +'\' >> out/'+ className +'.log 2>&1')
+   os.chdir(cwd)
+
+def runAmplificationBackend(proc ,force, projectName, cnf):
    todoFile = projectsDirectory + projectName + '/' + todoFileName
    if not os.path.exists(todoFile):
      print('todo file not found, skipping')
@@ -173,18 +192,7 @@ def runAmplificationBackend(proc ,force, projectName):
           print('Skipping ' + className + ' -- blacklist')
           continue
        if force or not checkDone(projectName, className):
-          print('Amplifying: ' + className)
-          cwd = os.getcwd()
-          os.chdir(projectsDirectory + projectName)
-          if not os.path.exists('out'):
-                os.makedirs('out')
-          with open('/tmp/AmpCurrent.smallamp', 'w') as f:
-              f.write(projectName)
-              f.write(':')
-              f.write(className)
-          cmd = 'SmallAmp initializeDefault testCase: {} ; amplifyEval'.format( className )
-          os.system(proc + ' Pharo.image eval --save \''+ cmd  +'\' > out/'+ className +'.log 2>&1')
-          os.chdir(cwd)
+          runClassAmplificationBackend(proc ,force, projectName,className, cnf)
           markAsDone(projectName, className)
        else:
           print('Skipping: ' + className)

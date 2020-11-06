@@ -209,6 +209,7 @@ def reportAmp(projectName, fix):
                   jsonObj['mutationScoreBefore'],
                   jsonObj['mutationScoreAfter'],
                   jsonObj['mutationScoreAfter'] - jsonObj['mutationScoreBefore'],
+                  jsonObj.get('numberOfOriginalTestMethods','NA'),
                   jsonObj['targetLoc'],
                   jsonObj['testLoc'],
                   jsonObj['testAmpLoc'],
@@ -295,13 +296,15 @@ def reportAmp_backend(projectName, fix):
          print('cannot read file: ', logFile)
          result.append({'stat':'fail','className':className})
          continue
-      if not "Run finish" in log:
-         result.append({'stat':'fail','className':className})
+      #if not "Run finish" in log:
       if "Error details" in log:
          errDet = re.findall('Error details:(.+)',log)[0]
          ampMethods = re.findall('assert amplification:(.+)',log)
          lastMethod = ampMethods[-1] if len(ampMethods) > 0 else ''
          result.append({'stat':'error','className':className,'errDet':errDet, 'lastMethod': lastMethod})
+      else:
+         result.append({'stat':'fail','className':className})
+
    if fix:
       return do_fix(result)
    return result

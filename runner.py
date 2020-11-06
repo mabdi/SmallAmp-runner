@@ -6,11 +6,13 @@ from reports import *
 
 parser = argparse.ArgumentParser(description='Evaluate SmallAmp on selected projects.')
 parser.add_argument('-p', '--project', help='Process on just specified project')
-parser.add_argument('-s', '--step', help='Process only specified step' , choices=['vm', 'load', 'stat', 'amp', 'reload', 'ampui', 'prepare', 'extra', 'cleanup', 'mongo', 'zip'] )
+parser.add_argument('-s', '--step', help='Process only specified step' , choices=['vm', 'load', 'stat', 'amp', 'reload', 'ampui', 'prepare', 'extra', 'cleanup', 'mongo', 'zip', 'ampc'] )
 parser.add_argument('-f', '--force', help='Use force' , action='store_true')
 parser.add_argument('-r', '--report', help='Generate report',  choices=['stat', 'amp', 'sum', 'anm'])
 parser.add_argument('-v', '--verbose', help='Verbose', action='store_true')
 parser.add_argument('-x', '--fix', help='fix scores', action='store_true')
+parser.add_argument('-a', '--additional', help='additional required parameters')
+
 
 args = parser.parse_args()
 force = args.force
@@ -18,6 +20,7 @@ step = args.step
 project =args.project
 report = args.report
 verbose = args.verbose
+additional= args.additional
 fix = args.fix
 
 def parseManifest(manifestFile):
@@ -55,6 +58,8 @@ def processMain():
            runAmplification(force, p['name'])
         if step == 'ampui':
            runAmplificationUI(force, p['name'])
+        if step == 'ampc':
+           runAmplificationCustom(force, p['name'], additional)
         if step == 'prepare':
            print('dup vm:')
            duplicateVM(force, p['name'])
