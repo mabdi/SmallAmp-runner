@@ -72,7 +72,7 @@ def processMain():
         if step == 'mongo':
            moveToMongo(force, p['name'], p['prefix'], p['file'])
         if step == 'zip':
-           packResult(force, p['name'], p['prefix'], p['file'])
+           packResult(force, p['name'], p['prefix'], p['file'], additional)
         if step == 'finalize':
            packResult(force, p['name'], p['prefix'], p['file'])
            moveToMongo(force, p['name'], p['prefix'], p['file'])

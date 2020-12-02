@@ -19,13 +19,18 @@ def duplicateVM(force, projectName):
        os.system('cp -r '+ baseAddress + ' ' + destinationURL)
        print('Image duplicated: '+ destinationURL)
 
-def packResult(force, projectName, projectPrefix, projectFile):
+def packResult(force, projectName, projectPrefix, projectFile, extra):
    projectDirectory = projectsDirectory + projectName
-   zipFile = zipDirectory + projectName + str(int(time.time())) + '.zip'
+   name_detail = "" if extra is None else ('_'+extra)
+   #zipFile = zipDirectory + projectName + str(int(time.time())) + '.zip'
+   zipFile = zipDirectory + projectName + name_detail +  '.zip'
    file_paths = []
-   for filename in glob.glob(projectDirectory+'/*'):
-            if filename.lower().endswith(('.txt', '.log', '.st', '.json')):
-               file_paths.append(filename)
+   file_paths.append(projectDirectory+'/'+ projectName +'.stat')
+   file_paths.extend(glob.glob(projectDirectory+'/*.json'))
+   file_paths.extend(glob.glob(projectDirectory+'/*.st'))
+   file_paths.extend(glob.glob(projectDirectory+'/*.txt'))
+   file_paths.extend(glob.glob(projectDirectory+'/*.log'))
+   file_paths.extend(glob.glob(projectDirectory+'/out/*.log'))
 
    with ZipFile(zipFile, 'w') as zip:
         for file in file_paths:
