@@ -1,3 +1,4 @@
+#import datetime
 import os
 import glob
 import sys
@@ -32,6 +33,11 @@ def an_print(msg, more_det=None, verbose=False):
    print( msg)
    if verbose:
       print('--more details--' + str(more_det))
+
+def toPrettyTime(secs):
+  m, s = divmod(secs, 60)
+  h, m = divmod(m, 60)
+  return '{:d}:{:02d}:{:02d}'.format(h, m, s)
 
 def get_median(lst):
    idx = (len(lst) - 1) // 2
@@ -86,6 +92,83 @@ def reportAnomalies(projectName, fix, verbose):
           else:
              an_print(projectName + ',' + row['stat'], json.dumps(row), verbose)
 
+
+def reportTexSumTable(projectName):
+   data = reportAmp_backend(projectName,True )
+   if not data:
+     return (projectName + ',unknown') 
+   id = 99
+   tcn = 0 #total class number
+   tmn = 0 # total method number
+   is_imp = 0 # the number of classes having an increase
+   imp_sum = 0 # sum of increases, used for average
+   mut_killed = 0 # sum all killed muts
+   gmn = 0 # sum generated methods number
+   tt = 0 # total time
+   for row in data:
+      if row['stat'] == 'success':
+         jsonObj = row['jsonObj']
+         tcn  += 1
+         tmn += jsonObj.get('numberOfOriginalTestMethods',0)
+         if len(jsonObj['amplifiedMethods']):
+             is_imp +=1
+         imp_sum += jsonObj['mutationScoreAfter'] - jsonObj['mutationScoreBefore']
+         mut_killed += len(jsonObj['newCovered'])
+         gmn += len(jsonObj['amplifiedMethods'])
+         tt += jsonObj['timeTotal']
+
+   print(' & '.join(str(x) for x in [id, projectName ,
+                tcn, tmn,is_imp, ("%.2f" % (imp_sum / tcn)),mut_killed,gmn,
+                toPrettyTime( tt )]))
+
+
+def reportTexTables(projectName):
+   data = reportAmp_backend(projectName,True )
+   if not data:
+     return (projectName + ',unknown')
+   print('\hline')
+   print('\multicolumn{11}{|c|}{' + projectName + '}\\')
+   print('\hline')
+   id = 0
+   for row in data:
+      if row['stat'] == 'success':
+         id = id + 1
+         jsonObj = row['jsonObj']
+         print(' & '.join(str(x) for x in [id, row['className'],
+		jsonObj.get('numberOfOriginalTestMethods','NA'),
+		jsonObj['targetLoc'],
+		jsonObj['mutationScoreBefore'],
+		len(jsonObj['notCoveredInOriginal']) - len(jsonObj['newCovered']),
+		jsonObj['mutationScoreAfter'],
+		jsonObj['mutationScoreAfter'] - jsonObj['mutationScoreBefore'],
+		len(jsonObj['amplifiedMethods']),
+		len(jsonObj['newCovered']),
+		toPrettyTime( jsonObj['timeTotal'] )]))
+
+def analyseMethodName(mName):
+   import re
+   m = re.search('.+\>\>\#test.+_amp(.*)', mName)
+   p = [x[0] if len(x) >0 else '' for x in m.group(1).split("_")]
+   return p[1:]
+
+def reportAmpsStat(projectName):
+   data = reportAmp_backend(projectName,True )
+   if not data:
+     return (projectName + ',unknown')
+   lens = {}
+   amps = {}
+   for row in data:
+     if row['stat'] == 'success':
+       jsonObj = row['jsonObj']
+       thisAmps = [analyseMethodName(x) for x in jsonObj['amplifiedMethods']]
+       for lst in thisAmps:
+          lens[str(len(lst))] = lens.get(str(len(lst)),0) + 1
+          if len(lst) == 0:
+             amps['none'] = amps.get("none",0) + 1
+          for x in lst:
+             amps[x] = amps.get(x,0) + 1
+   print("lens: ", lens)
+   print("amps: ", amps)
 
 def reportStat(projectName):
    d = reportStat_backend(projectName)

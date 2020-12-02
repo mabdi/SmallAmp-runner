@@ -1,14 +1,14 @@
 import argparse
-from datetime import datetime
 from config import *
 from steps import *
 from reports import *
+import datetime
 
 parser = argparse.ArgumentParser(description='Evaluate SmallAmp on selected projects.')
 parser.add_argument('-p', '--project', help='Process on just specified project')
 parser.add_argument('-s', '--step', help='Process only specified step' , choices=['vm', 'load', 'stat', 'amp', 'reload', 'ampui', 'prepare', 'extra', 'cleanup', 'mongo', 'zip', 'ampc'] )
 parser.add_argument('-f', '--force', help='Use force' , action='store_true')
-parser.add_argument('-r', '--report', help='Generate report',  choices=['stat', 'amp', 'sum', 'anm'])
+parser.add_argument('-r', '--report', help='Generate report',  choices=['stat', 'amp', 'sum', 'anm', 'longtable', 'sumtable', 'ampslog'])
 parser.add_argument('-v', '--verbose', help='Verbose', action='store_true')
 parser.add_argument('-x', '--fix', help='fix scores', action='store_true')
 parser.add_argument('-a', '--additional', help='additional required parameters')
@@ -89,11 +89,18 @@ def reportMain():
             reportSum(p['name'],fix)
          elif report == 'anm':
             reportAnomalies(p['name'],fix , verbose)
+         elif report == 'longtable':
+            reportTexTables(p['name'])
+         elif report == 'sumtable':
+            reportTexSumTable(p['name'])
+         elif report == 'ampslog':
+            reportAmpsStat(p['name'])
 
-print('Script started at: ', datetime.now().strftime("%m/%d/%Y, %H:%M:%S"))
+
+print('Script started at: ', datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S"))
 if not report is None:
    reportMain()
 else:
    processMain() #default action
-print('Script finished at: ', datetime.now().strftime("%m/%d/%Y, %H:%M:%S"))
+print('Script finished at: ', datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S"))
 
