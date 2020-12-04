@@ -10,4 +10,4 @@ WAExceptionHandlerTest
 GQLSelectionSetNodeTest
 SmartFinderTest
 ZnUtilsTest
-
+PhLVirtualMachineTest
