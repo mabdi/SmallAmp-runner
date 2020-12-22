@@ -127,7 +127,7 @@ def reportTexTables(projectName):
    if not data:
      return (projectName + ',unknown')
    print('\hline')
-   print('\multicolumn{11}{|c|}{' + projectName + '}\\')
+   print('\multicolumn{12}{|c|}{' + projectName + '}\\\\')
    print('\hline')
    id = 0
    for row in data:
@@ -137,13 +137,14 @@ def reportTexTables(projectName):
          print(' & '.join(str(x) for x in [id, row['className'],
 		jsonObj.get('numberOfOriginalTestMethods','NA'),
 		jsonObj['targetLoc'],
+		jsonObj['numberOfAllMutationsInOriginal'],
 		jsonObj['mutationScoreBefore'],
 		len(jsonObj['notCoveredInOriginal']) - len(jsonObj['newCovered']),
 		jsonObj['mutationScoreAfter'],
 		jsonObj['mutationScoreAfter'] - jsonObj['mutationScoreBefore'],
 		len(jsonObj['amplifiedMethods']),
 		len(jsonObj['newCovered']),
-		toPrettyTime( jsonObj['timeTotal'] )]))
+		toPrettyTime( jsonObj['timeTotal'] )]) + '\\\\')
 
 def analyseMethodName(mName):
    import re
