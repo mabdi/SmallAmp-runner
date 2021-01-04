@@ -119,7 +119,7 @@ def reportTexSumTable(projectName):
 
    print(' & '.join(str(x) for x in [id, projectName ,
                 tcn, tmn,is_imp, ("%.2f" % (imp_sum / tcn)),mut_killed,gmn,
-                toPrettyTime( tt )]))
+                toPrettyTime( tt )]) + '\\\\')
 
 
 def reportTexTables(projectName):
@@ -127,22 +127,29 @@ def reportTexTables(projectName):
    if not data:
      return (projectName + ',unknown')
    print('\hline')
-   print('\multicolumn{12}{|c|}{' + projectName + '}\\\\')
+   print('\multicolumn{13}{|c|}{' + projectName + '}\\\\')
    print('\hline')
    id = 0
    for row in data:
       if row['stat'] == 'success':
          id = id + 1
          jsonObj = row['jsonObj']
+         killedOriginal = jsonObj['numberOfAllMutationsInOriginal'] - len( jsonObj['notCoveredInOriginal'])
+         score1 = 100 * ( killedOriginal / jsonObj['numberOfAllMutationsInOriginal'])
+         score2 = 100 * (( killedOriginal + len(jsonObj['newCovered']) ) / jsonObj['numberOfAllMutationsInOriginal'])
          print(' & '.join(str(x) for x in [id, row['className'],
 		jsonObj.get('numberOfOriginalTestMethods','NA'),
 		jsonObj['targetLoc'],
 		jsonObj['numberOfAllMutationsInOriginal'],
-		jsonObj['mutationScoreBefore'],
-		len(jsonObj['notCoveredInOriginal']) - len(jsonObj['newCovered']),
-		jsonObj['mutationScoreAfter'],
-		jsonObj['mutationScoreAfter'] - jsonObj['mutationScoreBefore'],
+#		jsonObj['mutationScoreBefore'],
+		"{:.2f}".format( score1 ),
+#		len(jsonObj['notCoveredInOriginal']) - len(jsonObj['newCovered']),
+		len(jsonObj['notCoveredInOriginal']),
+#		jsonObj['mutationScoreAfter']
+		"{:.2f}".format( score2 ),
+		"{:.2f}".format( score2 - score1 ),
 		len(jsonObj['amplifiedMethods']),
+		"-" if killedOriginal==0 else "{:.2f}".format(len(jsonObj['newCovered']) / killedOriginal  ),
 		len(jsonObj['newCovered']),
 		toPrettyTime( jsonObj['timeTotal'] )]) + '\\\\')
 
@@ -151,6 +158,14 @@ def analyseMethodName(mName):
    m = re.search('.+\>\>\#test.+_amp(.*)', mName)
    p = [x[0] if len(x) >0 else '' for x in m.group(1).split("_")]
    return p[1:]
+
+
+def pushit(dic1,dic):
+    for k,v in dic.items():
+       dic1[k] = dic1.get(k,0) + v
+
+g_lens = {}
+g_amps  =  {}
 
 def reportAmpsStat(projectName):
    data = reportAmp_backend(projectName,True )
@@ -168,8 +183,12 @@ def reportAmpsStat(projectName):
              amps['none'] = amps.get("none",0) + 1
           for x in lst:
              amps[x] = amps.get(x,0) + 1
-   print("lens: ", lens)
-   print("amps: ", amps)
+   pushit(g_lens,lens)
+   pushit(g_amps,amps)
+   print(projectName + " lens: ", lens)
+   print(projectName + " amps: ", amps)
+   print("g_lens: ", g_lens)
+   print("g_amps: ", g_amps)
 
 def reportStat(projectName):
    d = reportStat_backend(projectName)
@@ -259,6 +278,11 @@ def do_fix(result):
    for row in result:
       if row['stat'] == 'success':
          jsonObj = row['jsonObj']
+         # numberOfAllMutationsInOriginal
+         # mutationScoreBefore
+         # notCoveredInOriginal
+         # newCovered
+         # mutationScoreAfter
          if len(jsonObj['amplifiedMethods']) == 0:
             jsonObj['mutationScoreAfter'] = jsonObj['mutationScoreBefore']
          row['jsonObj'] = jsonObj

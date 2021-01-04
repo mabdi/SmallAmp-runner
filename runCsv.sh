@@ -1,5 +1,5 @@
 
-popSize=100
+popSize=5
 defaultConf=dspotAllamps
 cnf="SAConfig $defaultConf maxPop: $popSize; yourself"
 INPUT=data.csv

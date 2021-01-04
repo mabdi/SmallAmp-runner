@@ -1,4 +1,13 @@
-openponk,OPPluginRegistryTest
-openponk,OPSpecEditableDropListMorphTest
-openponk,OPRTEdgeHighlighterTest
-openponk,OPDiagramTest
+Bloc,BlCornerRadiiTest
+DataFrame,DataFrameJsonWriterTest
+DiscordSt,DSEmbedImageTest
+GraphQL,GQLAbstractGrammarTest
+MaterialDesignLite,MDLApplicationTest
+openponk,OPElementLayoutTest
+petitparser2,PP2NoopVisitorTest
+pharo-launcher,PhLTreeSelectionTest
+PolyMath,PMAB2SolverTest
+Roassal3,RSCameraTest
+Seaside,WARequestContextTest
+Telescope,TLDistributionMapTest
+zinc,ZnRequestLineTest
