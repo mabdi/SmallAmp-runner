@@ -5,7 +5,5 @@ if [ -z "$SMALLAMP_CI_HOME" ]; then
     exit 2;
 fi
 
-pushd
 cd $SMALLAMP_CI_HOME
 python3 runner.py -g
-popd
