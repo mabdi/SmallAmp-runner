@@ -8,6 +8,7 @@ import json
 from config import *
 from zipfile import ZipFile
 import time
+from command import Command
 
 def duplicateVM(force, projectName):
    destinationURL = projectsDirectory + projectName
@@ -55,7 +56,7 @@ def makeStat(force, projectName, projectPrefix, projectFile):
    destinationURL = projectsDirectory + projectName
    cwd = os.getcwd()
    os.chdir(destinationURL)
-   os.system(pharoVM + ' Pharo.image smallamp --stat={} > projectStat.log 2>&1'.format( projectName ) )
+   os.system(pharoVM + ' ' + pharoImage + ' smallamp --stat={} > projectStat.log 2>&1'.format( projectName ) )
    #os.system(pharoVM + ' Pharo.image st '+ statStFileName +' --save --quit > projectStat.log')
    os.chdir(cwd)
 
@@ -178,7 +179,7 @@ def runClassAmplificationBackend(proc ,force, projectName,className, cnf):
       f.write(':')
       f.write(className)
    cmd = '(SmallAmp initializeWith: ({})) testCase: {} ; amplifyEval'.format( cnf, className )
-   os.system(proc + ' Pharo.image eval  \''+ cmd  +'\' >> out/'+ className +'.log 2>&1')
+   os.system(proc + ' ' + pharoImage + ' eval  \''+ cmd  +'\' >> out/'+ className +'.log 2>&1')
    os.chdir(cwd)
 
 def runAmplificationBackend(proc ,force, projectName, cnf):
@@ -204,3 +205,20 @@ def runAmplificationBackend(proc ,force, projectName, cnf):
 
 
 
+def runAmplificationCI():
+   print('CI for:'+ CIRepoName)
+   c = Command(pharoVM + ' ' + pharoImage + ' eval ' + "\"[ Metacello new
+        baseline: 'SmallAmp';
+        repository: 'github://mabdi/small-amp/src';
+        onUpgrade: [ :ex | ex useIncoming ];
+        onConflictUseIncoming;
+        load ] on: Warning do: [ :w | w resume ].
+        Smalltalk snapshot: true andQuit: true\"")
+   c.run(timeout=60)
+   
+   print('Making Stat files')
+   c = Command(pharoVM + ' ' + pharoImage + ' smallamp --stat=' + CIRepoName)
+   c.run(timeout=300)
+
+   
+   runClassAmplificationBackend(pharoVM, True, CIRepoName, 'SAConfig default')

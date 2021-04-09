@@ -1,10 +1,13 @@
 import argparse
+import config as configModule
 from config import *
 from steps import *
 from reports import *
 import datetime
+import os
 
 parser = argparse.ArgumentParser(description='Evaluate SmallAmp on selected projects.')
+parser.add_argument('-g', '--githubci', help='Run inside github actions', action='store_true')
 parser.add_argument('-p', '--project', help='Process on just specified project')
 parser.add_argument('-s', '--step', help='Process only specified step' , choices=['vm', 'load', 'stat', 'amp', 'reload', 'ampui', 'prepare', 'extra', 'cleanup', 'mongo', 'zip', 'ampc'] )
 parser.add_argument('-f', '--force', help='Use force' , action='store_true')
@@ -12,7 +15,6 @@ parser.add_argument('-r', '--report', help='Generate report',  choices=['stat', 
 parser.add_argument('-v', '--verbose', help='Verbose', action='store_true')
 parser.add_argument('-x', '--fix', help='fix scores', action='store_true')
 parser.add_argument('-a', '--additional', help='additional required parameters')
-
 
 args = parser.parse_args()
 force = args.force
@@ -22,6 +24,7 @@ report = args.report
 verbose = args.verbose
 additional= args.additional
 fix = args.fix
+githubci = args.githubci
 
 def parseManifest(manifestFile):
    manifest = []
@@ -97,10 +100,22 @@ def reportMain():
             reportAmpsStat(p['name'])
 
 
+def githubCIMain():
+   repo = os.getenv('reponame')
+   vm = os.getenv('SMALLTALK_CI_VM')
+   image = os.getenv('SMALLTALK_CI_IMAGE')
+   setattr(configModule,'pharoVM', vm)
+   setattr(configModule,'pharoImage', image)
+   setattr(configModule,'CIRepoName', repo)
+   runAmplificationCI()      
+
 print('Script started at: ', datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S"))
 if not report is None:
    reportMain()
 else:
-   processMain() #default action
+   if githubci:
+      githubCIMain()
+   else:
+      processMain() #default action
 print('Script finished at: ', datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S"))
 

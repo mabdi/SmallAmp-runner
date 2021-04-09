@@ -16,3 +16,5 @@ todoFileName = 'todo.txt'
 doneFileName = 'done.txt'
 blacklistfile = projectsDirectory + 'blacklist.txt'
 zipDirectory = 'zips/'
+pharoImage= 'Pharo.image'
+CIRepoName=None
