@@ -105,7 +105,8 @@ def githubCIMain():
    vm = os.getenv('SMALLTALK_CI_VM')
    image = os.getenv('SMALLTALK_CI_IMAGE')
    setattr(configModule,'pharoVM', vm)
-   setattr(configModule,'pharoImage', image)
+   setattr(configModule,'pharoImage', 'TravisCI.image')
+   setattr(configModule,'projectsDirectory',os.path.dirname(image))
    setattr(configModule,'CIRepoName', repo)
    runAmplificationCI()      
 

@@ -220,5 +220,26 @@ def runAmplificationCI():
    c = Command(pharoVM + ' ' + pharoImage + ' smallamp --stat=' + CIRepoName)
    c.run(timeout=300)
 
+   todoFile = projectsDirectory + '/' + todoFileName
+   if not os.path.exists(todoFile):
+     print('todo file not found, skipping')
+     return
+
+   with open(todoFile,"r") as f:
+      todo = f.readlines()
+
+   for cname in todo:
+       className = cname.strip()
+       if not className:
+          continue
+   print('Amplifying: ' + className)
+   cwd = os.getcwd()
+   os.chdir(projectsDirectory)
+   if not os.path.exists('out'):
+      os.makedirs('out')
+   cmd = '(SmallAmp initializeWith: (SAConfig default)) testCase: {} ; amplifyEval'.format( className )
+   c = Command(proc + ' ' + pharoImage + ' eval  \''+ cmd  +'\' >> out/'+ className +'.log 2>&1')
+   c.run(timeout=6*60*60)
+   os.chdir(cwd)
+
    
-   runClassAmplificationBackend(pharoVM, True, CIRepoName, 'SAConfig default')
