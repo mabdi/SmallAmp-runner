@@ -205,9 +205,9 @@ def runAmplificationBackend(proc ,force, projectName, cnf):
 
 
 
-def runAmplificationCI():
-   print('CI for:'+ CIRepoName)
-   c = Command(pharoVM + ' ' + pharoImage + ' eval ' + """ "[ Metacello new
+def runAmplificationCI(repo, vm, image, base, imgFile):
+   print('CI for:'+ repo)
+   c = Command(vm + ' ' + imgFile + ' eval ' + """ "[ Metacello new
         baseline: 'SmallAmp';
         repository: 'github://mabdi/small-amp/src';
         onUpgrade: [ :ex | ex useIncoming ];
@@ -217,10 +217,10 @@ def runAmplificationCI():
    c.run(timeout=60)
    
    print('Making Stat files')
-   c = Command(pharoVM + ' ' + pharoImage + ' smallamp --stat=' + CIRepoName)
+   c = Command(vm + ' ' + imgFile + ' smallamp --stat=' + repo)
    c.run(timeout=300)
 
-   todoFile = projectsDirectory + '/' + todoFileName
+   todoFile = base + '/' + todoFileName
    if not os.path.exists(todoFile):
      print('todo file not found, skipping')
      return
@@ -232,14 +232,14 @@ def runAmplificationCI():
        className = cname.strip()
        if not className:
           continue
-   print('Amplifying: ' + className)
-   cwd = os.getcwd()
-   os.chdir(projectsDirectory)
-   if not os.path.exists('out'):
-      os.makedirs('out')
-   cmd = '(SmallAmp initializeWith: (SAConfig default)) testCase: {} ; amplifyEval'.format( className )
-   c = Command(proc + ' ' + pharoImage + ' eval  \''+ cmd  +'\' >> out/'+ className +'.log 2>&1')
-   c.run(timeout=6*60*60)
-   os.chdir(cwd)
+       print('Amplifying: ' + className)
+       cwd = os.getcwd()
+       os.chdir(base)
+       if not os.path.exists('out'):
+          os.makedirs('out')
+       cmd = '(SmallAmp initializeWith: (SAConfig default)) testCase: {} ; amplifyEval'.format( className )
+       c = Command(vm + ' ' + imgFile + ' eval  \''+ cmd  +'\' >> out/'+ className +'.log 2>&1')
+       c.run(timeout=60*60)
+       os.chdir(cwd)
 
    
