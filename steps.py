@@ -207,13 +207,13 @@ def runAmplificationBackend(proc ,force, projectName, cnf):
 
 def runAmplificationCI():
    print('CI for:'+ CIRepoName)
-   c = Command(pharoVM + ' ' + pharoImage + ' eval ' + "\"[ Metacello new
+   c = Command(pharoVM + ' ' + pharoImage + ' eval ' + """ "[ Metacello new
         baseline: 'SmallAmp';
         repository: 'github://mabdi/small-amp/src';
         onUpgrade: [ :ex | ex useIncoming ];
         onConflictUseIncoming;
         load ] on: Warning do: [ :w | w resume ].
-        Smalltalk snapshot: true andQuit: true\"")
+        Smalltalk snapshot: true andQuit: true" """)
    c.run(timeout=60)
    
    print('Making Stat files')
