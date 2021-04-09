@@ -243,7 +243,24 @@ def runAmplificationCI(repo, vm, image, base, imgFile):
        cmd = '(SmallAmp initializeWith: (SAConfig default)) testCase: {} ; amplifyEval'.format( className )
        c = Command(vm + ' ' + imgFile + ' eval  \''+ cmd  +'\' >> out/'+ className +'.log 2>&1')
        c.run(timeout=60*60)
-    
+
    os.chdir(cwd)
+
+   zipDirectory = os.path.expanduser("~") +'/.smallampCI_zip/' 
+   zipFile = zipDirectory + repo + str(int(time.time())) +  '.zip'
+   file_paths = []
+   file_paths.append(base+'/'+ projectName +'.stat')
+   file_paths.extend(glob.glob(base+'/*.json'))
+   file_paths.extend(glob.glob(base+'/*.st'))
+   file_paths.extend(glob.glob(base+'/*.txt'))
+   file_paths.extend(glob.glob(base+'/*.log'))
+   file_paths.extend(glob.glob(base+'/out/*.log'))
+
+   with ZipFile(zipFile, 'w') as zip:
+        for  file  in  file_paths :
+            arcname  =  file [ len ( base ):]
+            zip.write(file, arcname)
+
+    
 
    
