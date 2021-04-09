@@ -207,6 +207,9 @@ def runAmplificationBackend(proc ,force, projectName, cnf):
 
 def runAmplificationCI(repo, vm, image, base, imgFile):
    print('CI for:'+ repo)
+   cwd = os.getcwd()
+   os.chdir(base)
+
    c = Command(vm + ' ' + imgFile + ' eval ' + """ "[ Metacello new
         baseline: 'SmallAmp';
         repository: 'github://mabdi/small-amp/src';
@@ -223,23 +226,24 @@ def runAmplificationCI(repo, vm, image, base, imgFile):
    todoFile = base + '/' + todoFileName
    if not os.path.exists(todoFile):
      print('todo file not found, skipping')
+     os.chdir(cwd)
      return
 
    with open(todoFile,"r") as f:
       todo = f.readlines()
+
+   if not os.path.exists('out'):
+       os.makedirs('out')
 
    for cname in todo:
        className = cname.strip()
        if not className:
           continue
        print('Amplifying: ' + className)
-       cwd = os.getcwd()
-       os.chdir(base)
-       if not os.path.exists('out'):
-          os.makedirs('out')
        cmd = '(SmallAmp initializeWith: (SAConfig default)) testCase: {} ; amplifyEval'.format( className )
        c = Command(vm + ' ' + imgFile + ' eval  \''+ cmd  +'\' >> out/'+ className +'.log 2>&1')
        c.run(timeout=60*60)
-       os.chdir(cwd)
+    
+   os.chdir(cwd)
 
    
