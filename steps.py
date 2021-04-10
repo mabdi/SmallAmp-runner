@@ -205,7 +205,7 @@ def runAmplificationBackend(proc ,force, projectName, cnf):
 
 
 
-def runAmplificationCI(repo, vm, image, base, imgFile):
+def runAmplificationCI(repo, vm, image, base, imgFile, zipDirectory):
    print('CI for:'+ repo)
    cwd = os.getcwd()
    os.chdir(base)
@@ -246,8 +246,7 @@ def runAmplificationCI(repo, vm, image, base, imgFile):
 
    os.chdir(cwd)
 
-   zipDirectory = os.path.expanduser("~") +'/.smallampCI_zip/' 
-   zipFile = zipDirectory + repo + str(int(time.time())) +  '.zip'
+   zipFile = zipDirectory + '/' + repo + str(int(time.time())) +  '.zip'
    file_paths = []
    file_paths.append(base+'/'+ repo +'.stat')
    file_paths.extend(glob.glob(base+'/*.json'))

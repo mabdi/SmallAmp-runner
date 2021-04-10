@@ -104,11 +104,12 @@ def githubCIMain():
    repo = os.getenv('reponame')
    vm = os.getenv('SMALLTALK_CI_VM')
    image = os.getenv('SMALLTALK_CI_IMAGE')
+   zips = = os.getenv('SMALLAMP_CI_ZIPS')
    base = os.path.dirname(image)
    imgFile = 'TravisCI.image'
-   print("ENV==> repo: {}, vm: {}, image: {}, base: {}, imgFile: {}".format( repo, vm, image, base, imgFile))
+   print("ENV==> repo: {}, vm: {}, image: {}, base: {}, imgFile: {}, zips: {}".format( repo, vm, image, base, imgFile, zips))
 
-   runAmplificationCI(repo, vm, image, base, imgFile)
+   runAmplificationCI(repo, vm, image, base, imgFile, zips)
 
 print('Script started at: ', datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S"))
 if not report is None:
