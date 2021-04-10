@@ -105,11 +105,14 @@ def githubCIMain():
    vm = os.getenv('SMALLTALK_CI_VM')
    image = os.getenv('SMALLTALK_CI_IMAGE')
    zips = os.getenv('SMALLAMP_CI_ZIPS')
+   job_id = os.getenv('SMALLAMP_PORTION')
+   total_jobs = os.getenv('SMALLAMP_ALLJOBS')
    base = os.path.dirname(image)
    imgFile = 'TravisCI.image'
-   print("ENV==> repo: {}, vm: {}, image: {}, base: {}, imgFile: {}, zips: {}".format( repo, vm, image, base, imgFile, zips), flush=True)
+   print("ENV==> jobIndex: {}, jobTotal: {}, repo: {}, vm: {}, image: {}, base: {}, imgFile: {}, zips: {}".
+         format( job_id, total_jobs, repo, vm, image, base, imgFile, zips), flush=True)
 
-   runAmplificationCI(repo, vm, image, base, imgFile, zips)
+   runAmplificationCI(repo, vm, image, base, imgFile, zips, job_id, total_jobs)
 
 print('Script started at: ', datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S"), flush=True)
 if not report is None:

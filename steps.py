@@ -208,7 +208,7 @@ def syso(str):
    print(str, flush=True)
 
 
-def runAmplificationCI(repo, vm, image, base, imgFile, zipDirectory):
+def runAmplificationCI(repo, vm, image, base, imgFile, zipDirectory, job_id, total_jobs):
    syso('CI for:'+ repo)
    cwd = os.getcwd()
    os.chdir(base)
@@ -238,7 +238,10 @@ def runAmplificationCI(repo, vm, image, base, imgFile, zipDirectory):
    if not os.path.exists('out'):
        os.makedirs('out')
 
-   for cname in todo:
+   for i in range(len(todo)):
+       if i % total_jobs != job_id:
+           continue
+       cname = todo[i]    
        className = cname.strip()
        if not className:
           continue
