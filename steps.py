@@ -249,7 +249,7 @@ def runAmplificationCI(repo, vm, image, base, imgFile):
    zipDirectory = os.path.expanduser("~") +'/.smallampCI_zip/' 
    zipFile = zipDirectory + repo + str(int(time.time())) +  '.zip'
    file_paths = []
-   file_paths.append(base+'/'+ projectName +'.stat')
+   file_paths.append(base+'/'+ repo +'.stat')
    file_paths.extend(glob.glob(base+'/*.json'))
    file_paths.extend(glob.glob(base+'/*.st'))
    file_paths.extend(glob.glob(base+'/*.txt'))
