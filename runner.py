@@ -104,7 +104,7 @@ def githubCIMain():
    repo = os.getenv('reponame')
    vm = os.getenv('SMALLTALK_CI_VM')
    image = os.getenv('SMALLTALK_CI_IMAGE')
-   zips = = os.getenv('SMALLAMP_CI_ZIPS')
+   zips = os.getenv('SMALLAMP_CI_ZIPS')
    base = os.path.dirname(image)
    imgFile = 'TravisCI.image'
    print("ENV==> repo: {}, vm: {}, image: {}, base: {}, imgFile: {}, zips: {}".format( repo, vm, image, base, imgFile, zips))
