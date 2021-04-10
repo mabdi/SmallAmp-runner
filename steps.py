@@ -204,9 +204,12 @@ def runAmplificationBackend(proc ,force, projectName, cnf):
           print('Skipping: ' + className)
 
 
+def syso(str):
+   print(str, flush=True)
+
 
 def runAmplificationCI(repo, vm, image, base, imgFile, zipDirectory):
-   print('CI for:'+ repo)
+   syso('CI for:'+ repo)
    cwd = os.getcwd()
    os.chdir(base)
 
@@ -219,13 +222,13 @@ def runAmplificationCI(repo, vm, image, base, imgFile, zipDirectory):
         Smalltalk snapshot: true andQuit: true" """)
    c.run(timeout=60)
    
-   print('Making Stat files')
+   syso('Making Stat files')
    c = Command(vm + ' ' + imgFile + ' smallamp --stat=' + repo)
    c.run(timeout=300)
 
    todoFile = base + '/' + todoFileName
    if not os.path.exists(todoFile):
-     print('todo file not found, skipping')
+     syso('todo file not found, skipping')
      os.chdir(cwd)
      return
 
@@ -239,7 +242,7 @@ def runAmplificationCI(repo, vm, image, base, imgFile, zipDirectory):
        className = cname.strip()
        if not className:
           continue
-       print('Amplifying: ' + className)
+       syso('Amplifying: ' + className)
        cmd = '(SmallAmp initializeWith: (SAConfig default)) testCase: {} ; amplifyEval'.format( className )
        c = Command(vm + ' ' + imgFile + ' eval  \''+ cmd  +'\' >> out/'+ className +'.log 2>&1')
        c.run(timeout=60*60)
@@ -259,6 +262,7 @@ def runAmplificationCI(repo, vm, image, base, imgFile, zipDirectory):
         for  file  in  file_paths :
             arcname  =  file [ len ( base ):]
             zip.write(file, arcname)
+   syso('zip file created. '+ zipFile)
 
     
 

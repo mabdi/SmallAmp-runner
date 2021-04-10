@@ -107,11 +107,11 @@ def githubCIMain():
    zips = os.getenv('SMALLAMP_CI_ZIPS')
    base = os.path.dirname(image)
    imgFile = 'TravisCI.image'
-   print("ENV==> repo: {}, vm: {}, image: {}, base: {}, imgFile: {}, zips: {}".format( repo, vm, image, base, imgFile, zips))
+   print("ENV==> repo: {}, vm: {}, image: {}, base: {}, imgFile: {}, zips: {}".format( repo, vm, image, base, imgFile, zips), flush=True)
 
    runAmplificationCI(repo, vm, image, base, imgFile, zips)
 
-print('Script started at: ', datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S"))
+print('Script started at: ', datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S"), flush=True)
 if not report is None:
    reportMain()
 else:
@@ -119,5 +119,5 @@ else:
       githubCIMain()
    else:
       processMain() #default action
-print('Script finished at: ', datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S"))
+print('Script finished at: ', datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S"), flush=True)
 
