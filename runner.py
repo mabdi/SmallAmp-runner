@@ -112,7 +112,7 @@ def githubCIMain():
    print("ENV==> jobIndex: {}, jobTotal: {}, repo: {}, vm: {}, image: {}, base: {}, imgFile: {}, zips: {}".
          format( job_id, total_jobs, repo, vm, image, base, imgFile, zips), flush=True)
 
-   runAmplificationCI(repo, vm, image, base, imgFile, zips, job_id, total_jobs)
+   runAmplificationCI(repo, vm, image, base, imgFile, zips, int(job_id), int(total_jobs))
 
 print('Script started at: ', datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S"), flush=True)
 if not report is None:
