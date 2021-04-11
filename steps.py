@@ -251,6 +251,7 @@ def runAmplificationCI(repo, vm, image, base, imgFile, zipDirectory, job_id, tot
        c.run(timeout=60*60)
 
    os.chdir(cwd)
+   # TODO: build two different zips for result and debug info
 
    zipFile = zipDirectory + '/' + repo + str(int(time.time())) +  '.zip'
    file_paths = []
