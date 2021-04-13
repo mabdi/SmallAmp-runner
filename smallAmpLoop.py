@@ -1,7 +1,7 @@
 from command import Command
 import json
 
-def read_json(self, fname):
+def read_json(fname):
    with open(fname) as f:
       jsonStr = f.read()
    try:
