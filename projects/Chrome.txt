@@ -1,9 +1,0 @@
-Metacello new
-	configuration: 'OSSubprocess';
-	repository: 'github://marianopeck/OSSubprocess:master/repository';
-	version: #stable;
-	load.
-Metacello new
-	baseline: 'Chrome';
-	repository: 'github://astares/Pharo-Chrome:master/repository';
-	load.

@@ -1,4 +1,0 @@
-Metacello new
-  repository: 'github://mabdi/zinc:toamp/repository';
-  baseline: 'ZincHTTPComponents';
-  load.

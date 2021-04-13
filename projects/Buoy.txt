@@ -1,4 +1,0 @@
-Metacello new
-        baseline: 'Buoy';
-        repository: 'github://ba-st/Buoy:release-candidate/source';
-        load.

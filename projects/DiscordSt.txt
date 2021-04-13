@@ -1,4 +1,0 @@
-Metacello new
-    baseline: #DiscordSt;
-    repository: 'github://mabdi/DiscordSt:toamp/src';
-    load.

@@ -1,4 +1,0 @@
-Metacello new
-   baseline: 'Beacon';
-   repository: 'github://pharo-project/pharo-beacon/repository';
-   load

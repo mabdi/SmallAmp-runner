@@ -1,4 +1,0 @@
-Metacello new
-    baseline: 'PharoLauncher';
-    repository: 'github://mabdi/pharo-launcher:toamp/src';
-    load

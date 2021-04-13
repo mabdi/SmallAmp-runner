@@ -1,4 +1,0 @@
-Metacello new
-  baseline: 'FileTree';
-  repository: 'github://dalehenrich/filetree:pharo7.0_dev/repository';
-  load.

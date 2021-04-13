@@ -1,4 +1,0 @@
-Metacello new
-        baseline: 'Bloc';
-        repository: 'github://mabdi/Bloc:toamp/src';
-        load

@@ -1,4 +1,0 @@
-Metacello new
-  baseline: 'PharoJS';
-  repository: 'github://mabdi/PharoJS:toamp';
-  load

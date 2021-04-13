@@ -1,4 +1,0 @@
-Metacello new
-  baseline: 'Moose';
-  repository: 'github://moosetechnology/Moose:development/src';
-  load.

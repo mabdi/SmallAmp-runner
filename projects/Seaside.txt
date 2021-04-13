@@ -1,4 +1,0 @@
-Metacello new
- baseline:'Seaside3';
- repository: 'github://mabdi/Seaside:toamp/repository';
- load

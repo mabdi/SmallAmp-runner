@@ -1,5 +1,0 @@
-Metacello new
-	githubUser: 'mabdi' project: 'MaterialDesignLite' commitish: 'toamp' path: 'src';
-	baseline: 'MaterialDesignLite';
-	onWarningLog;
-	load

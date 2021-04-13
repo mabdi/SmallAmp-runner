@@ -1,4 +1,0 @@
-Metacello new
-    baseline: 'Grease';
-    githubUser: 'SeasideSt' project: 'Grease' commitish: 'master' path: 'repository';
-    load

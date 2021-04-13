@@ -1,4 +1,0 @@
-Metacello new
-    baseline: 'Roassal3';
-    repository: 'github://mabdi/Roassal3:toamp';
-    load.

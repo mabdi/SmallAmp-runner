@@ -1,4 +1,0 @@
-Metacello new
-        repository: 'github://juliendelplanque/DrTests/src';
-        baseline: 'DrTests';
-        load

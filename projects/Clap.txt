@@ -1,3 +1,0 @@
-Metacello new baseline: 'Clap';
-    repository: 'github://cdlm/clap-st/src';
-    load.

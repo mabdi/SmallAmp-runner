@@ -1,4 +1,0 @@
-Metacello new 
-	repository: 'github://pharo-nosql/voyage/mc';
-	baseline: 'Voyage';
-	load: 'mongo tests'.

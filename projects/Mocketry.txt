@@ -1,4 +1,0 @@
-Metacello new
-  baseline: 'Mocketry';
-  repository: 'github://dionisiydk/Mocketry';
-  load

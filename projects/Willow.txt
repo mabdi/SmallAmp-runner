@@ -1,4 +1,0 @@
-Metacello new
-        baseline: 'Willow';
-        repository: 'github://mabdi/Willow:toamp/source';
-        load.

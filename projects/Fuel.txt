@@ -1,4 +1,0 @@
-Metacello new
-    repository: 'github://theseion/Fuel:3.0.2/repository';
-    baseline: 'Fuel';
-    load.

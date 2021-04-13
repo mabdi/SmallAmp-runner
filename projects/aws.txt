@@ -1,4 +1,0 @@
-Metacello new
-    baseline: 'AWS';
-    repository: 'github://newapplesho/aws-sdk-smalltalk/pharo-repository';
-    load.

@@ -1,4 +1,0 @@
-Metacello new
-    baseline: 'PetitParser2';
-    repository: 'github://mabdi/petitparser2:toamp';
-    load.

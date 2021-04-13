@@ -1,4 +1,0 @@
-Metacello new
-    baseline: 'NovaStelo';
-    repository: 'github://EiichiroIto/NovaStelo/filetree';
-    load.

@@ -1,6 +1,0 @@
-Metacello new
-            githubUser: 'mabdi' project: 'Telescope' commitish: 'toamp' path: 'src';
-            baseline: 'Telescope';
-            onWarningLog;
-                onUpgrade: [ :e | e useIncoming ];
-            load

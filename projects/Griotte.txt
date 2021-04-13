@@ -1,4 +1,0 @@
-Metacello new
-  baseline: 'Griotte';
-  repository: 'github://Balletie/Griotte';
-  load: 'tests'.

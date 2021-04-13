@@ -1,5 +1,0 @@
-Metacello new
-        repository: 'github://UMMISCO/kendrick';
-        baseline: 'Kendrick';
-        onWarningLog ;
-        load

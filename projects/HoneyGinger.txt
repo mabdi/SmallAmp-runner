@@ -1,4 +1,0 @@
-Metacello new
-    baseline: 'HoneyGinger';
-    repository: 'github://tomooda/HoneyGinger/repository';
-    load.

@@ -1,4 +1,0 @@
-Metacello new
-        repository: 'github://mabdi/PolyMath:toamp/src';
-        baseline: 'PolyMath';
-        load

@@ -1,5 +1,0 @@
-Metacello new
-  baseline: #SmartTest;
-  githubUser: 'badetitou' project: 'SmartTest' commitish: 'development' path: '.';
-  onWarningLog;
-  load: #all
