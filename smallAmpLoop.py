@@ -12,7 +12,7 @@ def read_json(self, fname):
 
 class MainLoop:
 
-  def __init__(self, vm, imgFile, className, logFile, inputAmpIter = 3, config = '(SAConfig default)'):
+   def __init__(self, vm, imgFile, className, logFile, inputAmpIter = 3, config = '(SAConfig default)'):
      self._vm = vm
      self._img = imgFile
      self._cls = className
@@ -21,26 +21,26 @@ class MainLoop:
      self._logFile = logFile
      self._ts = []
 
-  def runSmallAmp(self, cmd, t = 60):
+   def runSmallAmp(self, cmd, t = 60):
      c = Command(self._vm + ' ' + self._img + ' smallamp ' + cmd + ' >> ' + self._logFile + ' 2>&1')
      c.run(timeout=t)
      # TODO: add onTimeout, onCrash events to Command
      # todo log to file
 
-  def amplify(self):
+   def amplify(self):
      self.setup_class()
      for testSelector in self._ts:
           self.setup_method(testSelector)
           self.assert_amp()
           self.selection()
-          self._n_input times:
+          for n in range(self._n_input):
               self.input_amp()
               self.assert_amp()
               self.selection()
               self.finalize_method()
      self.finalize_class()
 
-  def setup_class(self):
+   def setup_class(self):
      self.runSmallAmp(' --ciAmplifyClass={}'.format(self._cls))
      self._ts = read_json('_smallamp_theTS.json')
 
@@ -51,7 +51,7 @@ class MainLoop:
      self.runSmallAmp(' --ciFinalizeTest')
 
    def finalize_class(self):
-     self.runSmallAmp(' --ciFinalizeClass'
+     self.runSmallAmp(' --ciFinalizeClass')
 
    def selection(self):
      self.runSmallAmp(' --ciSelectionInit')
