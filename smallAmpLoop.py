@@ -12,18 +12,20 @@ def read_json(self, fname):
 
 class MainLoop:
 
-  def __init__(self, vm, imgFile, className, inputAmpIter = 3, config = '(SAConfig default)'):
+  def __init__(self, vm, imgFile, className, logFile, inputAmpIter = 3, config = '(SAConfig default)'):
      self._vm = vm
      self._img = imgFile
      self._cls = className
      self._cnf = config
      self._n_input = inputAmpIter
+     self._logFile = logFile
      self._ts = []
 
   def runSmallAmp(self, cmd, t = 60):
-     c = Command(self._vm + ' ' + self._img + ' smallamp ' + cmd)
+     c = Command(self._vm + ' ' + self._img + ' smallamp ' + cmd + ' >> ' + self._logFile + ' 2>&1')
      c.run(timeout=t)
      # TODO: add onTimeout, onCrash events to Command
+     # todo log to file
 
   def amplify(self):
      self.setup_class()

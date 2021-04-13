@@ -6,6 +6,7 @@ from datetime import datetime
 import re
 import json
 from config import *
+from smallAmpLoop import MainLoop
 from zipfile import ZipFile
 import time
 from command import Command
@@ -246,10 +247,8 @@ def runAmplificationCI(repo, vm, image, base, imgFile, zipDirectory, job_id, tot
        if not className:
           continue
        syso('Amplifying: ' + className)
-       cmd = '(SmallAmp initializeWith: (SAConfig default)) testCase: {} ; amplifyEval'.format( className )
-       c = Command(vm + ' ' + imgFile + ' eval  \''+ cmd  +'\' >> out/'+ className +'.log 2>&1')
-       c.run(timeout=60*60)
-
+       MainLoop(vm, imgFile, className, 'out/'+ className +'.log').amplify()
+       
    os.chdir(cwd)
    # TODO: build two different zips for result and debug info
 
