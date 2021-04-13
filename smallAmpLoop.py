@@ -21,11 +21,12 @@ class MainLoop:
      self._logFile = logFile
      self._ts = []
 
-   def runSmallAmp(self, cmd, t = 60):
-     c = Command(self._vm + ' ' + self._img + ' smallamp ' + cmd + ' >> ' + self._logFile + ' 2>&1')
+   def runSmallAmp(self, cmdtxt, t = 60):
+     cmd = self._vm + ' ' + self._img + ' smallamp ' + cmdtxt + ' >> ' + self._logFile + ' 2>&1'
+     print('RUN: ', cmd)
+     c = Command(cmd) 
      c.run(timeout=t)
      # TODO: add onTimeout, onCrash events to Command
-     # todo log to file
 
    def amplify(self):
      self.setup_class()

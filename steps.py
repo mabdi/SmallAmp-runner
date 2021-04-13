@@ -246,7 +246,9 @@ def runAmplificationCI(repo, vm, image, base, imgFile, zipDirectory, job_id, tot
        className = cname.strip()
        if not className:
           continue
+       MainLoop(vm, imgFile, className, 'out/'+ className +'.log').amplify()
        syso('Amplifying: ' + className)
+       os.system('ls -al')
        MainLoop(vm, imgFile, className, 'out/'+ className +'.log').amplify()
        
    os.chdir(cwd)
