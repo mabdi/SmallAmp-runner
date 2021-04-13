@@ -29,7 +29,7 @@ class MainLoop:
 
   def amplify(self):
      self.setup_class()
-     foreach testSelector in self._ts:
+     for testSelector in self._ts:
           self.setup_method(testSelector)
           self.assert_amp()
           self.selection()
