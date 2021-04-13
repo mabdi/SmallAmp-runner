@@ -23,7 +23,7 @@ class MainLoop:
 
    def runSmallAmp(self, cmdtxt, t = 60):
      cmd = self._vm + ' ' + self._img + ' smallamp ' + cmdtxt + ' >> ' + self._logFile + ' 2>&1'
-     print('RUN: ', cmd)
+     print('RUN: ', cmd, flush=True)
      c = Command(cmd) 
      c.run(timeout=t)
      # TODO: add onTimeout, onCrash events to Command
