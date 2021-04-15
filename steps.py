@@ -211,6 +211,7 @@ def syso(str):
 
 def runAmplificationCI(tonel, repo, vm, image, base, imgFile, zipDirectory, job_id, total_jobs):
    syso('CI for:'+ repo)
+   tout = 2*60*60
    cwd = os.getcwd()
    os.chdir(base)
 
@@ -247,10 +248,28 @@ def runAmplificationCI(tonel, repo, vm, image, base, imgFile, zipDirectory, job_
        if not className:
           continue
        syso('Amplifying: ' + className + ' (i: ' + str(i) + ', all: '+ str(total_jobs) + ')' )
-       try:
-          MainLoop(vm, imgFile, className, 'out/'+ className +'.log').amplify()
-       except SmallAmpError as err:
-          syso('Amplification Failed with exit code: ' + str(err.exit_code))
+       os.system('cp '+ imgFile + ' Sandbox.image')
+       os.system('cp '+ imgFile[:-6] + '.changes Sandbox.changes')
+       cmd1 = '{} Sandbox.image smallamp --useSnapshots={} >> out/{}.log 2>&1'.format(vm, className, className)
+       cmd2 = '{} Sandbox.image  >> out/{}.log 2>&1'.format(vm, className)
+       cmd = cmd1
+       while True:
+          c = Command(cmd)
+          syso('Running command: {}'.format(cmd))
+          c.run(timeout=tout)
+          if c.timedout:
+             syso('Amplification Terminated because timeout, className: {}'.format(className))
+             break
+          else:
+             if c.code() == 0:
+                syso('Amplification finished for className: {}'.format(className))
+                break
+             syso('A possible crash for className: {}'.format(className))
+             timestamp = int(time.time())
+             os.system('mv _smallamp_last_event.json crash_{}.json'.format( timestamp ))
+             os.system('mv _mutalk_lasttest.txt crash_{}_mutant.txt'.format( timestamp ))
+             cmd = cmd2
+          
        
    os.chdir(cwd)
    # TODO: build two different zips for result and debug info
