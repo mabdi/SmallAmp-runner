@@ -4,6 +4,7 @@ class Command(object):
     def __init__(self, cmd):
         self.cmd = cmd
         self.process = None
+        self.timedout = False
 
     def run(self, timeout):
         def target():
@@ -16,8 +17,9 @@ class Command(object):
         thread.join(timeout)
         if thread.is_alive():
             self.process.terminate()
+            self.timedout= True
             thread.join()
 
-#command = Command("echo 'Process started'; sleep 2; echo 'Process finished'")
-#command.run(timeout=3)
-#command.run(timeout=1)
+    def code(self):
+        if self.process:
+            return self.process.returncode

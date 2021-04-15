@@ -3,7 +3,7 @@ import json
 import os
 
 def read_json(fname):
-   print(os.system('ls -al'), flush=True)
+   #print(os.system('ls -al'), flush=True)
    with open(fname) as f:
       jsonStr = f.read()
    try:
@@ -11,6 +11,12 @@ def read_json(fname):
    except:
       pass
    return jsonObj
+
+class SmallAmpError(Exception):
+
+   def __init__(self, exit_code):
+      self.exit_code = exit_code
+
 
 class MainLoop:
 
@@ -28,7 +34,10 @@ class MainLoop:
      print('RUN: ', cmd, flush=True)
      c = Command(cmd) 
      c.run(timeout=t)
-     # TODO: add onTimeout, onCrash events to Command
+     if c.timedout:
+        pass
+        # TODO: add onTimeout, onCrash events to Command
+     return c.code()
 
    def amplify(self):
      self.setup_class()
@@ -44,8 +53,11 @@ class MainLoop:
      self.finalize_class()
 
    def setup_class(self):
-     self.runSmallAmp(' --ciAmplifyClass={}'.format(self._cls))
-     self._ts = read_json('_smallamp_theTS.json')
+     exit_code = self.runSmallAmp(' --ciAmplifyClass={}'.format(self._cls))
+     if exit_code == 0:
+        self._ts = read_json('_smallamp_theTS.json')
+     else:
+        raise SmallAmpError(exit_code)
 
    def setup_method(self, selector):
      self.runSmallAmp(' --ciAmplifyTest={}'.format(selector))

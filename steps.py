@@ -6,7 +6,7 @@ from datetime import datetime
 import re
 import json
 from config import *
-from smallAmpLoop import MainLoop
+from smallAmpLoop import *
 from zipfile import ZipFile
 import time
 from command import Command
@@ -209,19 +209,19 @@ def syso(str):
    print(str, flush=True)
 
 
-def runAmplificationCI(repo, vm, image, base, imgFile, zipDirectory, job_id, total_jobs):
+def runAmplificationCI(tonel, repo, vm, image, base, imgFile, zipDirectory, job_id, total_jobs):
    syso('CI for:'+ repo)
    cwd = os.getcwd()
    os.chdir(base)
 
-   c = Command(vm + ' ' + imgFile + ' eval ' + """ "[ Metacello new
+   c = Command("""{} {} eval "[ Metacello new
         baseline: 'SmallAmp';
-        repository: 'github://mabdi/small-amp/src';
+        repository: 'tonel://{}';
         onUpgrade: [ :ex | ex useIncoming ];
         onConflictUseIncoming;
         load ] on: Warning do: [ :w | w resume ].
-        Smalltalk snapshot: true andQuit: true" """)
-   c.run(timeout=60)
+        Smalltalk snapshot: true andQuit: true" """.format(vm, imgFile, tonel))
+   c.run(timeout=120)
    
    syso('Making Stat files')
    c = Command(vm + ' ' + imgFile + ' smallamp --stat=' + repo)
@@ -246,9 +246,11 @@ def runAmplificationCI(repo, vm, image, base, imgFile, zipDirectory, job_id, tot
        className = cname.strip()
        if not className:
           continue
-       syso('Amplifying: ' + className)
-       syso(os.system('ls -al'))
-       MainLoop(vm, imgFile, className, 'out/'+ className +'.log').amplify()
+       syso('Amplifying: ' + className + ' (i: ' + str(i) + ', all: '+ str(total_jobs) + ')' )
+       try:
+          MainLoop(vm, imgFile, className, 'out/'+ className +'.log').amplify()
+       except SmallAmpError as err:
+          syso('Amplification Failed with exit code: ' + str(err.exit_code))
        
    os.chdir(cwd)
    # TODO: build two different zips for result and debug info
@@ -268,6 +270,3 @@ def runAmplificationCI(repo, vm, image, base, imgFile, zipDirectory, job_id, tot
             zip.write(file, arcname)
    syso('zip file created. '+ zipFile)
 
-    
-
-   
