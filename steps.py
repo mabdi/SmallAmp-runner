@@ -275,7 +275,7 @@ def runAmplificationCI(tonel, repo, vm, image, base, imgFile, zipDirectory, job_
    os.chdir(cwd)
    # TODO: build two different zips for result and debug info
 
-   zipFile = zipDirectory + '/' + repo + str(int(time.time())) +  '.zip'
+   zipFile = zipDirectory + '/' + repo + '_job_' + str(job_id) + '_' + str(int(time.time())) +  '.zip'
    file_paths = []
    file_paths.append(base+'/'+ repo +'.stat')
    file_paths.extend(glob.glob(base+'/*.json'))
