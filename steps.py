@@ -217,7 +217,7 @@ def runAmplificationCI(tonel, repo, vm, image, base, imgFile, zipDirectory, job_
 
    c = Command("""{} {} eval "[ Metacello new
         baseline: 'SmallAmp';
-        repository: 'tonel://{}';
+        repository: 'tonel://{}/src';
         onUpgrade: [ :ex | ex useIncoming ];
         onConflictUseIncoming;
         load ] on: Warning do: [ :w | w resume ].
