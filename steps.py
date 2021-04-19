@@ -273,20 +273,29 @@ def runAmplificationCI(tonel, repo, vm, image, base, imgFile, zipDirectory, job_
           
        
    os.chdir(cwd)
-   # TODO: build two different zips for result and debug info
 
-   zipFile = zipDirectory + '/' + repo + '_job_' + str(job_id) + '_' + str(int(time.time())) +  '.zip'
+   zipFileLogs = zipDirectory + '/' + repo + '_job_' + str(job_id) + '_' + str(int(time.time())) +  'logs.zip'
+   file_paths = []
+   file_paths.extend(glob.glob(base+'/*.log'))
+   file_paths.extend(glob.glob(base+'/out/*.log'))
+
+   with ZipFile(zipFileLogs, 'w') as zip:
+        for  file  in  file_paths :
+            arcname  =  file [ len ( base ):]
+            zip.write(file, arcname)
+   syso('zip file created. '+ zipFileLogs)
+
+
+   zipFileResults = zipDirectory + '/' + repo + '_job_' + str(job_id) + '_' + str(int(time.time())) +  'results.zip'
    file_paths = []
    file_paths.append(base+'/'+ repo +'.stat')
    file_paths.extend(glob.glob(base+'/*.json'))
    file_paths.extend(glob.glob(base+'/*.st'))
    file_paths.extend(glob.glob(base+'/*.txt'))
-   file_paths.extend(glob.glob(base+'/*.log'))
-   file_paths.extend(glob.glob(base+'/out/*.log'))
 
-   with ZipFile(zipFile, 'w') as zip:
+   with ZipFile(zipFileResults, 'w') as zip:
         for  file  in  file_paths :
             arcname  =  file [ len ( base ):]
             zip.write(file, arcname)
-   syso('zip file created. '+ zipFile)
+   syso('zip file created. '+ zipFileResults)
 
