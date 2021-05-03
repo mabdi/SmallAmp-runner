@@ -1,4 +1,4 @@
-import argparse
+-300import argparse
 import os
 import glob
 import sys
@@ -220,7 +220,7 @@ def runAmplificationCI(tonel, repo, vm, image, base, imgFile, zipDirectory, job_
         repository: 'tonel://{}/src';
         onUpgrade: [ :ex | ex useIncoming ];
         onConflictUseIncoming;
-        load ] on: Warning do: [ :w | w resume ].
+        load: 'core' ] on: Warning do: [ :w | w resume ].
         Smalltalk snapshot: true andQuit: true" """.format(vm, imgFile, tonel))
    c.run(timeout=120)
    
