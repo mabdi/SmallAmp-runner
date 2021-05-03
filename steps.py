@@ -218,8 +218,6 @@ def runAmplificationCI(tonel, repo, vm, image, base, imgFile, zipDirectory, job_
    c = Command("""{} {} eval "[ Metacello new
         baseline: 'SmallAmp';
         repository: 'tonel://{}/src';
-        onUpgrade: [ :ex | ex useIncoming ];
-        onConflictUseIncoming;
         load: 'core' ] on: Warning do: [ :w | w resume ].
         Smalltalk snapshot: true andQuit: true" """.format(vm, imgFile, tonel))
    c.run(timeout=120)
