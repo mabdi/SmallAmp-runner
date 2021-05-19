@@ -84,21 +84,23 @@ def processMain():
 
 def doReport(project):
    if directory is None:
-      directory = projectsDirectory + project
+      d = projectsDirectory + project
+   else:
+      d = directory
    if report == 'stat':
-      reportStat(directory, project)
+      reportStat(d, project)
    elif report == 'amp':
-      reportAmp(directory, project,fix)
+      reportAmp(d, project,fix)
    elif report == 'sum':
-      reportSum(directory, project,fix)
+      reportSum(d, project,fix)
    elif report == 'anm':
-      reportAnomalies(directory, project, fix , verbose)
+      reportAnomalies(d, project, fix , verbose)
    elif report == 'longtable':
-      reportTexTables(directory, project)
+      reportTexTables(d, project)
    elif report == 'sumtable':
-      reportTexSumTable(directory, project)
+      reportTexSumTable(d, project)
    elif report == 'ampslog':
-      reportAmpsStat(directory, project)
+      reportAmpsStat(d, project)
 
 def reportMain():
    if project is None:
