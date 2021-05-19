@@ -358,9 +358,11 @@ def reportAmp_backend(directory, fix):
       return None
 
    json_files = [pos_json for pos_json in os.listdir(directory) if pos_json.endswith('.json')] # changed to .json
-   with open(blacklistfile) as f:
-      blacklistclasses = f.readlines()
-   blacklistclasses = [s.strip() for s in blacklistclasses]
+   blacklistclasses = []
+   if os.path.exists(blacklistfile):
+      with open(blacklistfile) as f:
+         blacklistclasses = f.readlines()
+      blacklistclasses = [s.strip() for s in blacklistclasses]
    with open(todoFile,"r") as f:
       todo = f.readlines()
    #print(12)
