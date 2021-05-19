@@ -82,27 +82,31 @@ def processMain():
            packResult(force, p['name'], p['prefix'], p['file'])
            moveToMongo(force, p['name'], p['prefix'], p['file'])
 
-def reportMain():
-   projects = parseManifest(manifestFile)
-   for p in projects:
-      if directory is None:
-         directory = projectsDirectory + p['name']
-      if project is None or project == p['name']:
-         if report == 'stat':
-            reportStat(directory, p['name'])
-         elif report == 'amp':
-            reportAmp(directory, p['name'],fix)
-         elif report == 'sum':
-            reportSum(directory, p['name'],fix)
-         elif report == 'anm':
-            reportAnomalies(directory, p['name'],fix , verbose)
-         elif report == 'longtable':
-            reportTexTables(directory, p['name'])
-         elif report == 'sumtable':
-            reportTexSumTable(directory, p['name'])
-         elif report == 'ampslog':
-            reportAmpsStat(directory, p['name'])
+def report(project):
+   if directory is None:
+      directory = projectsDirectory + project
+      if report == 'stat':
+         reportStat(directory, project)
+      elif report == 'amp':
+         reportAmp(directory, project,fix)
+      elif report == 'sum':
+         reportSum(directory, project,fix)
+      elif report == 'anm':
+         reportAnomalies(directory, project, fix , verbose)
+      elif report == 'longtable':
+         reportTexTables(directory, project)
+      elif report == 'sumtable':
+         reportTexSumTable(directory, project)
+      elif report == 'ampslog':
+         reportAmpsStat(directory, project)
 
+def reportMain():
+   if project is None:
+      projects = parseManifest(manifestFile)
+      for p in projects:
+         report(p)
+   else:
+      report(project)
 
 def githubCIMain():
    repo = os.getenv('reponame')
