@@ -85,26 +85,26 @@ def processMain():
 def doReport(project):
    if directory is None:
       directory = projectsDirectory + project
-      if report == 'stat':
-         reportStat(directory, project)
-      elif report == 'amp':
-         reportAmp(directory, project,fix)
-      elif report == 'sum':
-         reportSum(directory, project,fix)
-      elif report == 'anm':
-         reportAnomalies(directory, project, fix , verbose)
-      elif report == 'longtable':
-         reportTexTables(directory, project)
-      elif report == 'sumtable':
-         reportTexSumTable(directory, project)
-      elif report == 'ampslog':
-         reportAmpsStat(directory, project)
+   if report == 'stat':
+      reportStat(directory, project)
+   elif report == 'amp':
+      reportAmp(directory, project,fix)
+   elif report == 'sum':
+      reportSum(directory, project,fix)
+   elif report == 'anm':
+      reportAnomalies(directory, project, fix , verbose)
+   elif report == 'longtable':
+      reportTexTables(directory, project)
+   elif report == 'sumtable':
+      reportTexSumTable(directory, project)
+   elif report == 'ampslog':
+      reportAmpsStat(directory, project)
 
 def reportMain():
    if project is None:
       projects = parseManifest(manifestFile)
       for p in projects:
-         doReport(p)
+         doReport(p['name'])
    else:
       doReport(project)
 
