@@ -82,7 +82,7 @@ def processMain():
            packResult(force, p['name'], p['prefix'], p['file'])
            moveToMongo(force, p['name'], p['prefix'], p['file'])
 
-def report(project):
+def doReport(project):
    if directory is None:
       directory = projectsDirectory + project
       if report == 'stat':
@@ -104,9 +104,9 @@ def reportMain():
    if project is None:
       projects = parseManifest(manifestFile)
       for p in projects:
-         report(p)
+         doReport(p)
    else:
-      report(project)
+      doReport(project)
 
 def githubCIMain():
    repo = os.getenv('reponame')
@@ -123,7 +123,7 @@ def githubCIMain():
 
    runAmplificationCI(tonel, repo, vm, image, base, imgFile, zips, int(job_id), int(total_jobs))
 
-if not report is None:
+if report is not None:
    reportMain()
 else:
    print('Script started at: ', datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S"), flush=True)
