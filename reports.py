@@ -62,8 +62,8 @@ def get_boxplot_infor(alist):
 
    return {"out_min": out_min, "out_min":out_min, "minimum":minimum, "maximum":maximum, "iqr":iqr, "q1":q1, "q3":q3, "median":median}
 
-def reportAnomalies(projectName, fix, verbose):
-   data = reportAmp_backend(projectName, fix)
+def reportAnomalies(directory, projectName, fix, verbose):
+   data = reportAmp_backend(directory, fix)
    if not data:
      return (projectName + ',unknown')
    for row in data:
@@ -93,8 +93,8 @@ def reportAnomalies(projectName, fix, verbose):
              an_print(projectName + ',' + row['stat'], json.dumps(row), verbose)
 
 
-def reportTexSumTable(projectName):
-   data = reportAmp_backend(projectName,True )
+def reportTexSumTable(directory, projectName):
+   data = reportAmp_backend(directory, True)
    if not data:
      return (projectName + ',unknown') 
    id = 99
@@ -122,8 +122,8 @@ def reportTexSumTable(projectName):
                 toPrettyTime( tt )]) + '\\\\')
 
 
-def reportTexTables(projectName):
-   data = reportAmp_backend(projectName,True )
+def reportTexTables(directory, projectName):
+   data = reportAmp_backend(directory, True )
    if not data:
      return (projectName + ',unknown')
    print('\hline')
@@ -167,8 +167,8 @@ def pushit(dic1,dic):
 g_lens = {}
 g_amps  =  {}
 
-def reportAmpsStat(projectName):
-   data = reportAmp_backend(projectName,True )
+def reportAmpsStat(directory, projectName):
+   data = reportAmp_backend(directory, True )
    if not data:
      return (projectName + ',unknown')
    lens = {}
@@ -195,8 +195,8 @@ def reportStat(projectName):
    if d:
       print(','.join(str(x) for x in reportStat_backend(projectName) ))
 
-def reportStat_backend(projectName):
-   statFile = projectsDirectory + projectName + '/' + projectName + '.stat'
+def reportStat_backend(directory, projectName):
+   statFile = directory + '/' + projectName + '.stat'
    if not os.path.exists(statFile):
       #print('file not found: '+ statFile)
       return []
@@ -217,9 +217,9 @@ def reportStat_backend(projectName):
    ]]
 
 
-def reportSum(projectName, fix):
-   data = reportAmp_backend(projectName,fix )
-   stat = reportStat_backend(projectName)
+def reportSum(directory, projectName, fix):
+   data = reportAmp_backend(directory, fix)
+   stat = reportStat_backend(directory, projectName)
    #print(stat)
    if not data:
      return (projectName + ',unknown')
@@ -289,8 +289,8 @@ def do_fix(result):
    return result
 
 
-def reportAmp(projectName, fix):
-   data = reportAmp_backend(projectName, fix)
+def reportAmp(directory, projectName, fix):
+   data = reportAmp_backend(directory, fix)
    if not data:
       print(projectName + ',,unknown')
       return
@@ -351,11 +351,9 @@ def reportAmp(projectName, fix):
           print('shet!' + json.dumps(row))
 
 
-def reportAmp_backend(projectName, fix):
+def reportAmp_backend(directory, fix):
    result = []
-   directory = projectsDirectory + projectName
-   todoFile = projectsDirectory + projectName + '/' + todoFileName
-   #print(os.path.exists(todoFile))
+   todoFile = directory + '/' + todoFileName
    if not os.path.exists(todoFile):
       return None
 

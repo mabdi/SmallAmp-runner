@@ -9,6 +9,7 @@ import os
 parser = argparse.ArgumentParser(description='Evaluate SmallAmp on selected projects.')
 parser.add_argument('-g', '--githubci', help='Run inside github actions', action='store_true')
 parser.add_argument('-p', '--project', help='Process on just specified project')
+parser.add_argument('-d', '--directory', help='The directory in which todo.txt is placed')
 parser.add_argument('-s', '--step', help='Process only specified step' , choices=['vm', 'load', 'stat', 'amp', 'reload', 'ampui', 'prepare', 'extra', 'cleanup', 'mongo', 'zip', 'ampc'] )
 parser.add_argument('-f', '--force', help='Use force' , action='store_true')
 parser.add_argument('-r', '--report', help='Generate report',  choices=['stat', 'amp', 'sum', 'anm', 'longtable', 'sumtable', 'ampslog'])
@@ -20,6 +21,7 @@ args = parser.parse_args()
 force = args.force
 step = args.step
 project =args.project
+directory =args.directory
 report = args.report
 verbose = args.verbose
 additional= args.additional
@@ -83,21 +85,23 @@ def processMain():
 def reportMain():
    projects = parseManifest(manifestFile)
    for p in projects:
+      if directory is None:
+         directory = projectsDirectory + p['name']
       if project is None or project == p['name']:
          if report == 'stat':
-            reportStat(p['name'])
+            reportStat(directory, p['name'])
          elif report == 'amp':
-            reportAmp(p['name'],fix)
+            reportAmp(directory, p['name'],fix)
          elif report == 'sum':
-            reportSum(p['name'],fix)
+            reportSum(directory, p['name'],fix)
          elif report == 'anm':
-            reportAnomalies(p['name'],fix , verbose)
+            reportAnomalies(directory, p['name'],fix , verbose)
          elif report == 'longtable':
-            reportTexTables(p['name'])
+            reportTexTables(directory, p['name'])
          elif report == 'sumtable':
-            reportTexSumTable(p['name'])
+            reportTexSumTable(directory, p['name'])
          elif report == 'ampslog':
-            reportAmpsStat(p['name'])
+            reportAmpsStat(directory, p['name'])
 
 
 def githubCIMain():
