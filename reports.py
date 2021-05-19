@@ -348,7 +348,7 @@ def reportAmp(directory, projectName, fix):
       elif row['stat'] == 'blacklist':
           print(projectName + ',' + row['className'] + ',' + 'Skipped (blacklist)')
       else:
-          print('shet!' + json.dumps(row))
+          print('fatal: ' + json.dumps(row))
 
 
 def reportAmp_backend(directory, fix):
