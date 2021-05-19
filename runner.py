@@ -119,13 +119,13 @@ def githubCIMain():
 
    runAmplificationCI(tonel, repo, vm, image, base, imgFile, zips, int(job_id), int(total_jobs))
 
-print('Script started at: ', datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S"), flush=True)
 if not report is None:
    reportMain()
 else:
+   print('Script started at: ', datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S"), flush=True)
    if githubci:
       githubCIMain()
    else:
       processMain() #default action
-print('Script finished at: ', datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S"), flush=True)
+   print('Script finished at: ', datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S"), flush=True)
 
