@@ -13,6 +13,9 @@ class Command(object):
             self.process.communicate()
 
         thread = threading.Thread(target=target)
+        files append: '_smallamp_process_started'
+        with open('_smallamp_process_started', 'w') as file:
+            file.write('')
         thread.start()
         while True:
            thread.join(timeout)
