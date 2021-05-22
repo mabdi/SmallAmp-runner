@@ -13,17 +13,17 @@ class Command(object):
             self.process.communicate()
 
         thread = threading.Thread(target=target)
-        files append: '_smallamp_process_started'
-        with open('_smallamp_process_started', 'w') as file:
-            file.write('')
         thread.start()
         while True:
            thread.join(timeout)
-           kill_it = True
+           kill_it = False
+           if len(files) == 0:
+               kill_it = True
            for file in files:
-               m_time = os.path.getmtime(file)
-               if datetime.datetime.now().timestamp() - m_time < timeout:
-                   kill_it = False
+               if os.path.exists(file):
+                   m_time = os.path.getmtime(file)
+                   if datetime.datetime.now().timestamp() - m_time > timeout:
+                       kill_it = True
            if kill_it:
                break
         if thread.is_alive():
