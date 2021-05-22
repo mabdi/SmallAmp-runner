@@ -255,22 +255,22 @@ def runAmplificationCI(tonel, repo, vm, image, base, imgFile, zipDirectory, job_
        cmd2 = '{} Sandbox.image  >> out/{}.log 2>&1'.format(vm, className)
        cmd = cmd1
        while True:
+
           c = Command(cmd)
           syso('Running command: {}'.format(cmd))
           c.run(timeout=tout, files=tout_files)
-          if c.timedout:
-             syso('Amplification Terminated because timeout, className: {}'.format(className))
-             break
-          else:
-             if c.code() == 0:
+          if c.code() == 0:
                 syso('Amplification finished for className: {}'.format(className))
                 break
+          if c.timedout:
+             syso('Amplification Terminated because timeout, className: {}'.format(className))
+          else:
              syso('A possible crash for className: {}'.format(className))
-             timestamp = int(time.time())
-             os.system('cp _smallamp_last_event.json crash_event_{}.json'.format( timestamp ))
-             os.system('mv _smallamp_crash_evidence.json crash_evidence_{}.json'.format( timestamp ))
-             os.system('mv _mutalk_lasttest.txt crash_{}_mutant.txt'.format( timestamp ))
-             cmd = cmd2
+          timestamp = int(time.time())
+          os.system('cp _smallamp_last_event.json crash_event_{}.json'.format( timestamp ))
+          os.system('mv _smallamp_crash_evidence.json crash_evidence_{}.json'.format( timestamp ))
+          os.system('mv _mutalk_lasttest.txt crash_{}_mutant.txt'.format( timestamp ))
+          cmd = cmd2
           
        
    os.chdir(cwd)
