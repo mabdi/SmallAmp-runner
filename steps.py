@@ -211,7 +211,8 @@ def syso(str):
 
 def runAmplificationCI(tonel, repo, vm, image, base, imgFile, zipDirectory, job_id, total_jobs):
    syso('CI for:'+ repo)
-   tout = 2*60*60
+   tout = 5*60 # every 5 minute check for freeze
+   tout_files = ['_smallamp_last_state.fl', '_smallamp_crash_evidence.json', '_smallamp_last_event.json']
    cwd = os.getcwd()
    os.chdir(base)
 
@@ -256,7 +257,7 @@ def runAmplificationCI(tonel, repo, vm, image, base, imgFile, zipDirectory, job_
        while True:
           c = Command(cmd)
           syso('Running command: {}'.format(cmd))
-          c.run(timeout=tout)
+          c.run(timeout=tout, files=tout_files)
           if c.timedout:
              syso('Amplification Terminated because timeout, className: {}'.format(className))
              break

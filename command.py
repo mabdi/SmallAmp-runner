@@ -1,4 +1,5 @@
-import subprocess, threading
+import subprocess, threading, os
+import datetime
 
 class Command(object):
     def __init__(self, cmd):
@@ -6,15 +7,22 @@ class Command(object):
         self.process = None
         self.timedout = False
 
-    def run(self, timeout):
+    def run(self, timeout, files=[]):
         def target():
             self.process = subprocess.Popen(self.cmd, shell=True)
             self.process.communicate()
 
         thread = threading.Thread(target=target)
         thread.start()
-
-        thread.join(timeout)
+        while True:
+           thread.join(timeout)
+           kill_it = True
+           for file in files:
+               m_time = os.path.getmtime(file)
+               if datetime.datetime.now().timestamp() - m_time < timeout:
+                   kill_it = False
+           if kill_it:
+               break
         if thread.is_alive():
             self.process.terminate()
             self.timedout= True
