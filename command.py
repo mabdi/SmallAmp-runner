@@ -21,9 +21,12 @@ class Command(object):
                kill_it = True
            for file in files:
                if os.path.exists(file):
-                   m_time = os.path.getmtime(file)
-                   if datetime.datetime.now().timestamp() - m_time > timeout:
-                       kill_it = True
+                    try:
+                        m_time = os.path.getmtime(file)
+                        if datetime.datetime.now().timestamp() - m_time > timeout:
+                            kill_it = True
+                    except: 
+                        pass
            if kill_it:
                break
         if thread.is_alive():
