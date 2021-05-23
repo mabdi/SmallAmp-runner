@@ -269,6 +269,8 @@ def runAmplificationCI(tonel, repo, vm, image, base, imgFile, zipDirectory, job_
           timestamp = int(time.time())
           os.system('cp _smallamp_last_event.json crash_event_{}.json'.format( timestamp ))
           os.system('mv _smallamp_crash_evidence.json crash_evidence_{}.json'.format( timestamp ))
+          os.system('cp PharoDebug.log PharoDebug_{}.log'.format( timestamp ))
+          
          #  os.system('mv _mutalk_lasttest.txt crash_{}_mutant.txt'.format( timestamp ))
           cmd = cmd2
           
