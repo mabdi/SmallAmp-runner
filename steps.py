@@ -211,7 +211,7 @@ def syso(str):
 
 def runAmplificationCI(tonel, repo, vm, image, base, imgFile, zipDirectory, job_id, total_jobs):
    syso('CI for:'+ repo)
-   tout = 5*60 # every 5 minute check for freeze
+   tout = 15*60 # every 15 minute check for freeze
    tout_files = ['_smallamp_last_state.fl', '_smallamp_crash_evidence.json', '_smallamp_last_event.json']
    cwd = os.getcwd()
    os.chdir(base)

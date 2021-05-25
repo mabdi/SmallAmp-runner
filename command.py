@@ -30,7 +30,8 @@ class Command(object):
            if kill_it:
                break
         if thread.is_alive():
-            self.process.terminate()
+            # self.process.terminate()
+            os.killpg(self.process.getpid(), signal.SIGTERM)
             self.timedout= True
             thread.join()
 
