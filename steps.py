@@ -251,8 +251,11 @@ def runAmplificationCI(tonel, repo, vm, image, base, imgFile, zipDirectory, job_
        syso('Amplifying: ' + className + ' (i: ' + str(i) + ', all: '+ str(total_jobs) + ')' )
        os.system('cp '+ imgFile + ' Sandbox.image')
        os.system('cp '+ imgFile[:-6] + '.changes Sandbox.changes')
-       cmd1 = '{} Sandbox.image smallamp --useSnapshots={} >> out/{}.log 2>&1'.format(vm, className, className)
-       cmd2 = '{} Sandbox.image  >> out/{}.log 2>&1'.format(vm, className)
+       #  cmd1 = '{} Sandbox.image smallamp --useSnapshots={} >> out/{}.log 2>&1'.format(vm, className, className)
+       #  cmd2 = '{} Sandbox.image  >> out/{}.log 2>&1'.format(vm, className)
+       cmd1 = '{} Sandbox.image smallamp --useSnapshots={}'.format(vm, className, className)
+       cmd2 = '{} Sandbox.image'.format(vm, className)
+       
        cmd = cmd1
        while True:
 
