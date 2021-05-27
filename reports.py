@@ -359,7 +359,7 @@ def reportAmp(directory, projectName, fix):
       if len(testslist) > 1:
          originalTestCase = testslist[0]['originalTestCase']
          mutationScoreBefore = testslist[0]['mutationScoreBefore']
-         allNewKilled = mutant for x in testslist for mutant in x['newCovered']
+         allNewKilled = [mutant for x in testslist for mutant in x['newCovered']]
          uniqKilledMutants = {"{}:{}:{}:{}".format(item['method'], item['operatorClass'], item['mutationStart'], item['mutationEnd']) for item in aList }
          mutationScoreAfter = (1.0) * (len(uniqKilledMutants) / testslist[0]['numberOfAllMutationsInOriginal'])
          numberOfOriginalTestMethods = sum(x['numberOfOriginalTestMethods'] for x in testslist)

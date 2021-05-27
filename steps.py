@@ -325,9 +325,9 @@ def runAmplificationCI(args):
        if not className:
           continue
        syso('Amplifying: ' + className + ' (i: ' + str(i) + ', all: '+ str(total_jobs) + ')' )
-       if mode = 'snapshot':
+       if mode == 'snapshot':
           runAmplificationCI_snapshoted(imgFile, vm, className)
-       if mode = 'dspot':
+       if mode == 'dspot':
           runAmplificationCI_dspot(imgFile, vm, className, maxInputs, iteration)
           
    os.chdir(cwd)
