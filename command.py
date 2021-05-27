@@ -16,6 +16,8 @@ class Command(object):
         thread.start()
         while True:
            thread.join(timeout)
+           if not thread.is_alive():
+               break
            kill_it = False
            if len(files) == 0:
                kill_it = True
