@@ -122,8 +122,8 @@ def githubCIMain():
       "iteration": os.getenv('SMALLAMP_iteration'),
       "maxInputs": os.getenv('SMALLAMP_maxInputs'),
       "mode": os.getenv('SMALLAMP_mode'),
-      "base": os.path.dirname(image),
-      "imgFile": 'TravisCI.image'
+      "base": os.path.dirname(os.getenv('SMALLTALK_CI_IMAGE')),
+      "imgFile": os.path.basename(os.getenv('SMALLTALK_CI_IMAGE'))
    }
    #print("ENV==> jobIndex: {}, jobTotal: {}, repo: {}, vm: {}, image: {}, base: {}, imgFile: {}, zips: {}, tonel: {}, iteration: {}, maxInputs: {}, mode: {}".
    #      format( job_id, total_jobs, repo, vm, image, base, imgFile, zips, tonel, iteration, maxInputs, mode ), flush=True)
