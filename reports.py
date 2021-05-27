@@ -294,10 +294,15 @@ def reportAmp(directory, projectName, fix):
    if not data:
       print(projectName + ',,unknown')
       return
+   target2test = {}
    for row in data:
       if row['stat'] == 'success':
           jsonObj = row['jsonObj']
+          targets = ' '.join(jsonObj['targetClasses'])
           xjson = row['xjson']
+          if targets not in target2test:
+             target2test[targets] = []  
+          target2test[targets].append(row)
           if not xjson:
              xjson = {'targetChurn': 'NA',
 			'testChurn': 'NA',
@@ -313,7 +318,7 @@ def reportAmp(directory, projectName, fix):
 		}
           print(projectName + ',' + row['className'] + ',' + 'Finished successfully' + ',' + ','.join(str(x) for x in [
                   jsonObj['amplifiedClass'],
-                  ' '.join(jsonObj['targetClasses']),
+                  targets,
                   jsonObj['mutationScoreBefore'],
                   jsonObj['mutationScoreAfter'],
                   jsonObj['mutationScoreAfter'] - jsonObj['mutationScoreBefore'],
@@ -349,7 +354,47 @@ def reportAmp(directory, projectName, fix):
           print(projectName + ',' + row['className'] + ',' + 'Skipped (blacklist)')
       else:
           print('fatal: ' + json.dumps(row))
+   # here I merge the splitted test classes
+   for target,testslist in target2test.items():
+      if len(testslist) > 1:
+         originalTestCase = testslist[0]['originalTestCase']
+         mutationScoreBefore = testslist[0]['mutationScoreBefore']
+         allNewKilled = mutant for x in testslist for mutant in x['newCovered']
+         uniqKilledMutants = {"{}:{}:{}:{}".format(item['method'], item['operatorClass'], item['mutationStart'], item['mutationEnd']) for item in aList }
+         mutationScoreAfter = (1.0) * (len(uniqKilledMutants) / testslist[0]['numberOfAllMutationsInOriginal'])
+         numberOfOriginalTestMethods = sum(x['numberOfOriginalTestMethods'] for x in testslist)
+         amplifiedMethods = sum(len(x['amplifiedMethods']) for x in testslist)
+         timeTotal = sum(x['timeTotal'] for x in testslist)
+         print(projectName + ',' + originalTestCase + ',' + 'Merged' + ',' + ','.join(str(x) for x in [
+                  '-',
+                  targets,
+                  mutationScoreBefore,
+                  "{:.2f}".format(mutationScoreAfter),
+                  "{:.2f}".format(mutationScoreAfter - mutationScoreBefore),
+                  numberOfOriginalTestMethods,
+                  testslist[0]['targetLoc'],
+                  '-',
+                  '-',
+                  '-',
+                  '-',
+                  '-',
+                  '-',
+                  '-',
+                  '-',
+                  '-',
+                  '-',
+                  amplifiedMethods,
+                  len(testslist[0]['notCoveredInOriginal']),
+                  len(uniqKilledMutants),
+                  len(jsonObj['notCoveredInAmplified']),
+                  '-',
+                  timeTotal,
+                  '-',
+                  '-',
+                  '-',
+                  '-'
 
+               ]))
 
 def reportAmp_backend(directory, fix):
    result = []

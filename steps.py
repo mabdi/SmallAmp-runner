@@ -208,14 +208,40 @@ def runAmplificationBackend(proc ,force, projectName, cnf):
 def syso(str):
    print(str, flush=True)
 
+def runAmplificationCI_dspot(imgFile, vm, className, maxInputs, iteration):
+   cmd = '(SmallAmp initializeWith: (SAConfig default iterations: {}; maxPop: {}; yourself)) testCase: {} ; amplifyEval'.format( int(iteration), int(maxInputs), className )
+   os.system(vm + ' ' + imgFile + ' eval  \''+ cmd  +'\'')
 
-def runAmplificationCI(tonel, repo, vm, image, base, imgFile, zipDirectory, job_id, total_jobs):
-   syso('CI for:'+ repo)
+def runAmplificationCI_snapshoted(imgFile, vm, className):
    tout = 15*60 # every 15 minute check for freeze
    tout_files = ['_smallamp_last_state.fl', '_smallamp_crash_evidence.json', '_smallamp_last_event.json']
-   cwd = os.getcwd()
-   os.chdir(base)
+   
+   os.system('cp '+ imgFile + ' Sandbox.image')
+   os.system('cp '+ imgFile[:-6] + '.changes Sandbox.changes')
+   #  cmd1 = '{} Sandbox.image smallamp --useSnapshots={} >> out/{}.log 2>&1'.format(vm, className, className)
+   #  cmd2 = '{} Sandbox.image  >> out/{}.log 2>&1'.format(vm, className)
+   cmd1 = '{} Sandbox.image smallamp --useSnapshots={}'.format(vm, className, className)
+   cmd2 = '{} Sandbox.image'.format(vm, className)
+   
+   cmd = cmd1
+   while True:
+      c = Command(cmd)
+      syso('Running command: {}'.format(cmd))
+      c.run(timeout=tout, files=tout_files)
+      if c.code() == 0:
+            syso('Amplification finished for className: {}'.format(className))
+            break
+      if c.timedout:
+         syso('Amplification Terminated because timeout, className: {}'.format(className))
+      else:
+         syso('A possible crash for className: {}'.format(className))
+      timestamp = int(time.time())
+      os.system('cp _smallamp_last_event.json crash_event_{}.json'.format( timestamp ))
+      os.system('mv _smallamp_crash_evidence.json crash_evidence_{}.json'.format( timestamp ))
+      os.system('cp PharoDebug.log PharoDebug_{}.log'.format( timestamp ))
+      cmd = cmd2
 
+def runAmplificationCI_installSmallAmp(vm, imgFile, tonel):
    c = Command("""{} {} eval "[ Metacello new
         baseline: 'SmallAmp';
         repository: 'tonel://{}/src';
@@ -225,61 +251,12 @@ def runAmplificationCI(tonel, repo, vm, image, base, imgFile, zipDirectory, job_
         Smalltalk snapshot: true andQuit: true" """.format(vm, imgFile, tonel))
    c.run(timeout=120)
    
+def runAmplificationCI_stats(vm, imgFile, repo):
    syso('Making Stat files')
    c = Command(vm + ' ' + imgFile + ' smallamp --stat=' + repo)
    c.run(timeout=300)
 
-   todoFile = base + '/' + todoFileName
-   if not os.path.exists(todoFile):
-     syso('todo file not found, skipping')
-     os.chdir(cwd)
-     return
-
-   with open(todoFile,"r") as f:
-      todo = f.readlines()
-
-   if not os.path.exists('out'):
-       os.makedirs('out')
-
-   for i in range(len(todo)):
-       if i % total_jobs != job_id:
-           continue
-       cname = todo[i]    
-       className = cname.strip()
-       if not className:
-          continue
-       syso('Amplifying: ' + className + ' (i: ' + str(i) + ', all: '+ str(total_jobs) + ')' )
-       os.system('cp '+ imgFile + ' Sandbox.image')
-       os.system('cp '+ imgFile[:-6] + '.changes Sandbox.changes')
-       #  cmd1 = '{} Sandbox.image smallamp --useSnapshots={} >> out/{}.log 2>&1'.format(vm, className, className)
-       #  cmd2 = '{} Sandbox.image  >> out/{}.log 2>&1'.format(vm, className)
-       cmd1 = '{} Sandbox.image smallamp --useSnapshots={}'.format(vm, className, className)
-       cmd2 = '{} Sandbox.image'.format(vm, className)
-       
-       cmd = cmd1
-       while True:
-
-          c = Command(cmd)
-          syso('Running command: {}'.format(cmd))
-          c.run(timeout=tout, files=tout_files)
-          if c.code() == 0:
-                syso('Amplification finished for className: {}'.format(className))
-                break
-          if c.timedout:
-             syso('Amplification Terminated because timeout, className: {}'.format(className))
-          else:
-             syso('A possible crash for className: {}'.format(className))
-          timestamp = int(time.time())
-          os.system('cp _smallamp_last_event.json crash_event_{}.json'.format( timestamp ))
-          os.system('mv _smallamp_crash_evidence.json crash_evidence_{}.json'.format( timestamp ))
-          os.system('cp PharoDebug.log PharoDebug_{}.log'.format( timestamp ))
-          
-         #  os.system('mv _mutalk_lasttest.txt crash_{}_mutant.txt'.format( timestamp ))
-          cmd = cmd2
-          
-       
-   os.chdir(cwd)
-
+def runAmplificationCI_storeAsZips(zipDirectory, repo, job_id, base):
    zipFileLogs = zipDirectory + '/' + repo + '_job_' + str(job_id) + '_' + str(int(time.time())) +  'logs.zip'
    file_paths = []
    file_paths.extend(glob.glob(base+'/*.log'))
@@ -304,4 +281,56 @@ def runAmplificationCI(tonel, repo, vm, image, base, imgFile, zipDirectory, job_
             arcname  =  file [ len ( base ):]
             zip.write(file, arcname)
    syso('zip file created. '+ zipFileResults)
+
+
+def runAmplificationCI(args):
+   tonel = args['tonel']
+   repo = args['repo']
+   vm = args['vm']
+   image = args['image']
+   base = args['base']
+   imgFile = args['imgFile']
+   zipDirectory = args['zips']
+   job_id = args['job_id']
+   total_jobs = args['total_jobs']
+
+   iteration = args['iteration']
+   maxInputs = args['maxInputs']
+   mode = args['mode']
+
+   syso('CI for:'+ repo)
+   cwd = os.getcwd()
+   os.chdir(base)
+
+   runAmplificationCI_installSmallAmp(vm, imgFile, tonel)
+   runAmplificationCI_stats(vm, imgFile, repo)
+
+   todoFile = base + '/' + todoFileName
+   if not os.path.exists(todoFile):
+     syso('todo file not found, skipping')
+     os.chdir(cwd)
+     return
+
+   with open(todoFile,"r") as f:
+      todo = f.readlines()
+
+   if not os.path.exists('out'):
+       os.makedirs('out')
+
+   for i in range(len(todo)):
+       if i % total_jobs != job_id:
+           continue
+       cname = todo[i]    
+       className = cname.strip()
+       if not className:
+          continue
+       syso('Amplifying: ' + className + ' (i: ' + str(i) + ', all: '+ str(total_jobs) + ')' )
+       if mode = 'snapshot':
+          runAmplificationCI_snapshoted(imgFile, vm, className)
+       if mode = 'dspot':
+          runAmplificationCI_dspot(imgFile, vm, className, maxInputs, iteration)
+          
+   os.chdir(cwd)
+
+   runAmplificationCI_storeAsZips(zipDirectory, repo, job_id, base)
 

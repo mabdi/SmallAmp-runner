@@ -111,19 +111,24 @@ def reportMain():
       doReport(project)
 
 def githubCIMain():
-   repo = os.getenv('reponame')
-   vm = os.getenv('SMALLTALK_CI_VM')
-   image = os.getenv('SMALLTALK_CI_IMAGE')
-   zips = os.getenv('SMALLAMP_CI_ZIPS')
-   job_id = os.getenv('SMALLAMP_PORTION')
-   total_jobs = os.getenv('SMALLAMP_ALLJOBS')
-   tonel = os.getenv('SMALLAMP_TONEL')
-   base = os.path.dirname(image)
-   imgFile = 'TravisCI.image'
-   print("ENV==> jobIndex: {}, jobTotal: {}, repo: {}, vm: {}, image: {}, base: {}, imgFile: {}, zips: {}, tonel: {}".
-         format( job_id, total_jobs, repo, vm, image, base, imgFile, zips, tonel), flush=True)
-
-   runAmplificationCI(tonel, repo, vm, image, base, imgFile, zips, int(job_id), int(total_jobs))
+   args = {
+      "repo": os.getenv('reponame'),
+      "vm": os.getenv('SMALLTALK_CI_VM'),
+      "image": os.getenv('SMALLTALK_CI_IMAGE'),
+      "zips": os.getenv('SMALLAMP_CI_ZIPS'),
+      "job_id": int(os.getenv('SMALLAMP_PORTION')),
+      "total_jobs": int(os.getenv('SMALLAMP_ALLJOBS')),
+      "tonel": os.getenv('SMALLAMP_TONEL'),
+      "iteration": os.getenv('SMALLAMP_iteration'),
+      "maxInputs": os.getenv('SMALLAMP_maxInputs'),
+      "mode": os.getenv('SMALLAMP_mode'),
+      "base": os.path.dirname(image),
+      "imgFile": 'TravisCI.image'
+   }
+   #print("ENV==> jobIndex: {}, jobTotal: {}, repo: {}, vm: {}, image: {}, base: {}, imgFile: {}, zips: {}, tonel: {}, iteration: {}, maxInputs: {}, mode: {}".
+   #      format( job_id, total_jobs, repo, vm, image, base, imgFile, zips, tonel, iteration, maxInputs, mode ), flush=True)
+   print(args, flush=True)
+   runAmplificationCI(args)
 
 if report is not None:
    reportMain()
