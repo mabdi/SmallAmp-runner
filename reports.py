@@ -357,22 +357,22 @@ def reportAmp(directory, projectName, fix):
    # here I merge the splitted test classes
    for target,testslist in target2test.items():
       if len(testslist) > 1:
-         originalTestCase = testslist[0]['originalTestCase']
-         mutationScoreBefore = testslist[0]['mutationScoreBefore']
-         allNewKilled = [mutant for x in testslist for mutant in x['newCovered']]
-         uniqKilledMutants = {"{}:{}:{}:{}".format(item['method'], item['operatorClass'], item['mutationStart'], item['mutationEnd']) for item in aList }
-         mutationScoreAfter = (1.0) * (len(uniqKilledMutants) / testslist[0]['numberOfAllMutationsInOriginal'])
-         numberOfOriginalTestMethods = sum(x['numberOfOriginalTestMethods'] for x in testslist)
-         amplifiedMethods = sum(len(x['amplifiedMethods']) for x in testslist)
-         timeTotal = sum(x['timeTotal'] for x in testslist)
+         originalTestCase = testslist[0]['jsonObj']['originalTestCase']
+         mutationScoreBefore = testslist[0]['jsonObj']['mutationScoreBefore']
+         allNewKilled = [mutant for x in testslist for mutant in x['jsonObj']['newCovered']]
+         uniqKilledMutants = {"{}:{}:{}:{}".format(item['method'], item['operatorClass'], item['mutationStart'], item['mutationEnd']) for item in allNewKilled }
+         mutationScoreImprove = (100.0) * (len(uniqKilledMutants) / testslist[0]['jsonObj']['numberOfAllMutationsInOriginal'])
+         numberOfOriginalTestMethods = sum(x['jsonObj']['numberOfOriginalTestMethods'] for x in testslist)
+         amplifiedMethods = sum(len(x['jsonObj']['amplifiedMethods']) for x in testslist)
+         timeTotal = sum(x['jsonObj']['timeTotal'] for x in testslist)
          print(projectName + ',' + originalTestCase + ',' + 'Merged' + ',' + ','.join(str(x) for x in [
                   '-',
                   targets,
                   mutationScoreBefore,
-                  "{:.2f}".format(mutationScoreAfter),
-                  "{:.2f}".format(mutationScoreAfter - mutationScoreBefore),
+                  "{:.2f}".format(mutationScoreBefore + mutationScoreImprove),
+                  "{:.2f}".format(mutationScoreImprove),
                   numberOfOriginalTestMethods,
-                  testslist[0]['targetLoc'],
+                  testslist[0]['jsonObj']['targetLoc'],
                   '-',
                   '-',
                   '-',
@@ -384,9 +384,9 @@ def reportAmp(directory, projectName, fix):
                   '-',
                   '-',
                   amplifiedMethods,
-                  len(testslist[0]['notCoveredInOriginal']),
+                  len(testslist[0]['jsonObj']['notCoveredInOriginal']),
                   len(uniqKilledMutants),
-                  len(jsonObj['notCoveredInAmplified']),
+                  len(testslist[0]['jsonObj']['notCoveredInOriginal']) - len(uniqKilledMutants),
                   '-',
                   timeTotal,
                   '-',
