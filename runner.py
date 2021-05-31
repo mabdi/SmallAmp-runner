@@ -90,7 +90,7 @@ def doReport(project):
    if report == 'stat':
       reportStat(d, project)
    elif report == 'amp':
-      reportAmp(d, project,fix)
+      reportAmp(d, project, fix, verbose)
    elif report == 'sum':
       reportSum(d, project,fix)
    elif report == 'anm':

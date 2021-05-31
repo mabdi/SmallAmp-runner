@@ -289,7 +289,7 @@ def do_fix(result):
    return result
 
 
-def reportAmp(directory, projectName, fix):
+def reportAmp(directory, projectName, fix, verbose):
    data = reportAmp_backend(directory, fix)
    if not data:
       print(projectName + ',,unknown')
@@ -305,18 +305,24 @@ def reportAmp(directory, projectName, fix):
           target2test[targets].append(row)
           if not xjson:
              xjson = {'targetChurn': 'NA',
-			'testChurn': 'NA',
-			'assertionDensityOriginal': 'NA',
-			'assertionDensityAmplified': 'NA',
-			'originalCoverageStatementes': 'NA',
-			'amplifiedCoverageStatementes': 'NA',
-			'originalCoverageBranches': 'NA',
-			'amplifiedCoverageBranches': 'NA',
-			'originalCoverageMethods': 'NA',
-			'amplifiedCoverageMethods': 'NA',
-			'directTestingOriginal': 'NA'
-		}
-          print(projectName + ',' + row['className'] + ',' + 'Finished successfully' + ',' + ','.join(str(x) for x in [
+                  'testChurn': 'NA',
+                  'assertionDensityOriginal': 'NA',
+                  'assertionDensityAmplified': 'NA',
+                  'originalCoverageStatementes': 'NA',
+                  'amplifiedCoverageStatementes': 'NA',
+                  'originalCoverageBranches': 'NA',
+                  'amplifiedCoverageBranches': 'NA',
+                  'originalCoverageMethods': 'NA',
+                  'amplifiedCoverageMethods': 'NA',
+                  'directTestingOriginal': 'NA'
+               }
+          show = False
+          if verbose:
+             show = True
+          if jsonObj['originalTestCase'] == row['className']:
+             show = True
+          if show:   
+             print(projectName + ',' + row['className'] + ',' + 'Finished successfully' + ',' + ','.join(str(x) for x in [
                   jsonObj['amplifiedClass'],
                   targets,
                   jsonObj['mutationScoreBefore'],
