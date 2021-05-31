@@ -211,7 +211,7 @@ def syso(str):
 def runAmplificationCI_dspot(imgFile, vm, className, maxInputs, iteration):
    #cmd = '(SmallAmp initializeWith: (SAConfig default iterations: {}; maxPop: {}; yourself)) testCase: {} ; amplifyEval  2>&1 | tee -a out/{}.log '.format( int(iteration), int(maxInputs), className, className )
    #os.system(vm + ' ' + imgFile + ' eval  \''+ cmd  +'\'')
-   cmd = '{} Sandbox.image smallamp --dspot={}  2>&1 | tee -a out/{}.log'.format(vm, className, className)
+   cmd = '{} {} smallamp --dspot={}  2>&1 | tee -a out/{}.log'.format(vm, imgFile, className, className)
    c = Command(cmd)
    syso('Running command: {}'.format(cmd))
    c.run(timeout=4 * 60 * 60)
