@@ -209,8 +209,12 @@ def syso(str):
    print(str, flush=True)
 
 def runAmplificationCI_dspot(imgFile, vm, className, maxInputs, iteration):
-   cmd = '(SmallAmp initializeWith: (SAConfig default iterations: {}; maxPop: {}; yourself)) testCase: {} ; amplifyEval'.format( int(iteration), int(maxInputs), className )
-   os.system(vm + ' ' + imgFile + ' eval  \''+ cmd  +'\'')
+   #cmd = '(SmallAmp initializeWith: (SAConfig default iterations: {}; maxPop: {}; yourself)) testCase: {} ; amplifyEval  2>&1 | tee -a out/{}.log '.format( int(iteration), int(maxInputs), className, className )
+   #os.system(vm + ' ' + imgFile + ' eval  \''+ cmd  +'\'')
+   cmd = '{} Sandbox.image smallamp --dspot={}  2>&1 | tee -a out/{}.log'.format(vm, className, className)
+   c = Command(cmd)
+   syso('Running command: {}'.format(cmd))
+   c.run(timeout=4 * 60 * 60)
 
 def runAmplificationCI_snapshoted(imgFile, vm, className):
    tout = 15*60 # every 15 minute check for freeze
@@ -220,8 +224,8 @@ def runAmplificationCI_snapshoted(imgFile, vm, className):
    os.system('cp '+ imgFile[:-6] + '.changes Sandbox.changes')
    #  cmd1 = '{} Sandbox.image smallamp --useSnapshots={} >> out/{}.log 2>&1'.format(vm, className, className)
    #  cmd2 = '{} Sandbox.image  >> out/{}.log 2>&1'.format(vm, className)
-   cmd1 = '{} Sandbox.image smallamp --useSnapshots={}'.format(vm, className, className)
-   cmd2 = '{} Sandbox.image'.format(vm, className)
+   cmd1 = '{} Sandbox.image smallamp --useSnapshots={}  2>&1 | tee -a out/{}.log'.format(vm, className, className)
+   cmd2 = '{} Sandbox.image  2>&1 | tee -a out/{}.log'.format(vm, className)
    
    cmd = cmd1
    while True:
