@@ -253,7 +253,7 @@ def runAmplificationCI_installSmallAmp(vm, imgFile, tonel):
    
 def runAmplificationCI_stats(vm, imgFile, repo):
    syso('Making Stat files')
-   c = Command(vm + ' ' + imgFile + ' smallamp --stat=' + repo)
+   c = Command(vm + ' ' + imgFile + ' smallamp --save --stat=' + repo)
    c.run(timeout=300)
 
 def runAmplificationCI_storeAsZips(zipDirectory, repo, job_id, base):
