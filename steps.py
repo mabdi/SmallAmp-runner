@@ -208,15 +208,15 @@ def runAmplificationBackend(proc ,force, projectName, cnf):
 def syso(str):
    print(str, flush=True)
 
-def runAmplificationCI_dspot(imgFile, vm, className, maxInputs, iteration):
+def runAmplificationCI_not_snapshoted(imgFile, vm, mode, className, maxInputs, iteration):
    #cmd = '(SmallAmp initializeWith: (SAConfig default iterations: {}; maxPop: {}; yourself)) testCase: {} ; amplifyEval  2>&1 | tee -a out/{}.log '.format( int(iteration), int(maxInputs), className, className )
    #os.system(vm + ' ' + imgFile + ' eval  \''+ cmd  +'\'')
-   cmd = '{} {} smallamp --dspot={}  2>&1 | tee -a out/{}.log'.format(vm, imgFile, className, className)
+   cmd = '{} {} smallamp --mode={} --testClass={}  2>&1 | tee -a out/{}.log'.format(vm, imgFile, mode, className, className)
    c = Command(cmd)
    syso('Running command: {}'.format(cmd))
    c.run(timeout=4 * 60 * 60)
 
-def runAmplificationCI_snapshoted(imgFile, vm, className):
+def runAmplificationCI_snapshoted(imgFile, vm, mode, className):
    tout = 15*60 # every 15 minute check for freeze
    tout_files = ['_smallamp_last_state.fl', '_smallamp_crash_evidence.json', '_smallamp_last_event.json']
    
@@ -224,7 +224,7 @@ def runAmplificationCI_snapshoted(imgFile, vm, className):
    os.system('cp '+ imgFile[:-6] + '.changes Sandbox.changes')
    #  cmd1 = '{} Sandbox.image smallamp --useSnapshots={} >> out/{}.log 2>&1'.format(vm, className, className)
    #  cmd2 = '{} Sandbox.image  >> out/{}.log 2>&1'.format(vm, className)
-   cmd1 = '{} Sandbox.image smallamp --useSnapshots={}  2>&1 | tee -a out/{}.log'.format(vm, className, className)
+   cmd1 = '{} Sandbox.image smallamp --mode={} --testClass={} 2>&1 | tee -a out/{}.log'.format(vm, mode, className, className)
    cmd2 = '{} Sandbox.image  2>&1 | tee -a out/{}.log'.format(vm, className)
    
    cmd = cmd1
@@ -329,10 +329,10 @@ def runAmplificationCI(args):
        if not className:
           continue
        syso('Amplifying: ' + className + ' (i: ' + str(i) + ', all: '+ str(total_jobs) + ')' )
-       if mode == 'snapshot':
-          runAmplificationCI_snapshoted(imgFile, vm, className)
-       if mode == 'dspot':
-          runAmplificationCI_dspot(imgFile, vm, className, maxInputs, iteration)
+       if 'Snapshots' in mode:
+          runAmplificationCI_snapshoted(imgFile, vm, mode, className)
+       else:
+          runAmplificationCI_not_snapshoted(imgFile, vm, mode, className, maxInputs, iteration)
           
    os.chdir(cwd)
 
