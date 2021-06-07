@@ -196,7 +196,7 @@ def reportStat(projectName):
       print(','.join(str(x) for x in reportStat_backend(projectName) ))
 
 def reportStat_backend(directory, projectName):
-   statFile = directory + '/' + projectName + '.stat'
+   statFile = glob.glob(directory + '/*.stat')[0]
    if not os.path.exists(statFile):
       #print('file not found: '+ statFile)
       return []
