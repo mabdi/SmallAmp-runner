@@ -325,9 +325,9 @@ def reportAmp(directory, projectName, fix, verbose):
              print(projectName + ',' + row['className'] + ',' + 'Finished successfully' + ',' + ','.join(str(x) for x in [
                   jsonObj['amplifiedClass'],
                   targets,
-                  jsonObj['mutationScoreBefore'],
-                  jsonObj['mutationScoreAfter'],
-                  jsonObj['mutationScoreAfter'] - jsonObj['mutationScoreBefore'],
+                  "{:.2f}".format(jsonObj['mutationScoreBefore']),
+                  "{:.2f}".format(jsonObj['mutationScoreAfter']),
+                  "{:.2f}".format(jsonObj['mutationScoreAfter'] - jsonObj['mutationScoreBefore']),
                   jsonObj.get('numberOfOriginalTestMethods','NA'),
                   jsonObj['targetLoc'],
                   jsonObj['testLoc'],
@@ -456,6 +456,16 @@ def reportAmp_backend(directory, fix):
          result.append({'stat':'fail','className':className})
          continue
       #if not "Run finish" in log:
+      if 'SANoUncovered' in log:
+         errDet = 'SANoUncovered'
+         lastMethod = ''
+         result.append({'stat':'error','className':className,'errDet':errDet, 'lastMethod': lastMethod})
+         continue
+      if 'SANoGreenTest' in log:
+         errDet = 'SANoGreenTest'
+         lastMethod = ''
+         result.append({'stat':'error','className':className,'errDet':errDet, 'lastMethod': lastMethod})
+         continue
       if "Error details" in log:
          errDet = re.findall('Error details:(.+)',log)[0]
          ampMethods = re.findall('assert amplification:(.+)',log)
