@@ -2,12 +2,12 @@ import os
 
 
 home = os.path.expanduser("~")
+pwd = os.getcwd()
+
 manifestDirectory = "projects/"
 manifestFile = manifestDirectory + "manifest.tsv"
-#templateFile = "statTemplate.txt"
 baseAddress = home + '/Pharo-Base/'
-#projectsDirectory = home + '/pharo-projects/'
-projectsDirectory = home + '/pharo-projects-files/'
+projectsDirectory = pwd + '/../pharo-projects-files/'
 statStFileName = 'stats.st'
 loaderStFileName = 'loader.st'
 pharoVM = home + '/Pharo/pharo'
