@@ -27,13 +27,13 @@ class Command(object):
                         m_time = os.path.getmtime(file)
                         if datetime.datetime.now().timestamp() - m_time > timeout:
                             kill_it = True
-                    except: 
+                    except:
                         pass
            if kill_it:
                break
         if thread.is_alive():
             # self.process.terminate()
-            os.killpg(self.process.getpid(), signal.SIGTERM)
+            os.killpg(self.process.pid, signal.SIGTERM)
             self.timedout= True
             thread.join()
 
