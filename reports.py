@@ -274,10 +274,10 @@ def reportSum(directory, projectName, fix):
             stat[1], stat[2],stat[3],stat[4],stat[5],stat[6]
          ]))
 
-def do_fix(result):
+def do_fix(old_result):
    target2test = {}
    result = []
-   for row in result:
+   for row in old_result:
       if row['stat'] == 'success':
          jsonObj = row['jsonObj']
          targets = ' '.join(jsonObj['targetClasses'])
@@ -290,13 +290,14 @@ def do_fix(result):
          originalTestCase = obj['jsonObj']['originalTestCase']
          obj['className'] = originalTestCase
          mutationScoreBefore = obj['jsonObj']['mutationScoreBefore']
-         newCovered = list(set([mutant for x in testslist for mutant in x['jsonObj']['newCovered']])) 
+         allNewKilled = [mutant for x in testslist for mutant in x['jsonObj']['newCovered']]
+         newCovered = list({ "{}:{}:{}:{}".format(item['method'], item['operatorClass'], item['mutationStart'], item['mutationEnd']) : item for item in allNewKilled }.values())
          obj['jsonObj']['newCovered'] = newCovered
-         #uniqKilledMutants = {"{}:{}:{}:{}".format(item['method'], item['operatorClass'], item['mutationStart'], item['mutationEnd']) for item in allNewKilled }
+         #uniqKilledMutants = { }
          mutationScoreImprove = (100.0) * (len(newCovered) / obj['jsonObj']['numberOfAllMutationsInOriginal'])
          obj['jsonObj']['mutationScoreAfter'] = mutationScoreBefore + mutationScoreImprove
          obj['jsonObj']['numberOfOriginalTestMethods'] = sum(x['jsonObj']['numberOfOriginalTestMethods'] for x in testslist)
-         obj['jsonObj']['amplifiedMethods'] = sum(len(x['jsonObj']['amplifiedMethods']) for x in testslist)
+         obj['jsonObj']['amplifiedMethods'] = list(set([m for x in testslist for m in x['jsonObj']['amplifiedMethods']]))
          obj['jsonObj']['timeTotal'] = sum(x['jsonObj']['timeTotal'] for x in testslist)
       result.append(obj)
 
